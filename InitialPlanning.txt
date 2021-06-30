@@ -1,0 +1,57 @@
+Database holding users, their accounts, transfers, transfer types/statuses
+
+accounts table holds balance
+
+need to make  JdbcAccountDao, JdbcTransferDao (access status and type)
+
+create controllers for AccountController getBalance
+TransferController (requesting, sending)
+
+
+General Notes:
+for every transfer of money, 2 transfers are created. A recieved and sent
+
+
+
+JdbcAccountDao:
+	getAccounts (by userID) return list
+	getBalance (by accountID) return BD
+	addToBalance (by accountID) return boolean
+	subtractFromBalance (by accountID) return boolean
+
+JdbcTransferDao:
+	getTransferById
+		look for transfer id and current user id
+	listAllTransfersByAccountID (byAccountID)
+		list to and from transfers based on accountID
+		Need to list all transfers user is associated with, find other user in the transfer to display their name 
+	getTransferInfo (by User and ID)
+	transfer(senderId, recieverID, amount)
+		compare amount to senders balance
+
+		
+JdbcTransferStatusDao
+	Every time new transfer done, use that transfer id and create new status
+
+JdbcTransferTypeDao
+	Every time new transfer done, use that transfer id and create 2 new types, sent and recieved
+
+
+
+AccountController:
+	getBalance
+	listUsers
+
+
+TransferController:
+	sendTransfer (for now this is just sending)
+		talk to accountDao to do the adding and subtracting
+	acceptTransfer (for optional)
+	listTranfersByAccountID
+	getTransferDetailsByTransferID
+	
+
+
+
+
+	
