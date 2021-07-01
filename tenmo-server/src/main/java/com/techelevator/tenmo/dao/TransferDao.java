@@ -1,6 +1,9 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Transfer;
+
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface TransferDao {
 
@@ -15,7 +18,7 @@ public interface TransferDao {
 
     // sendTransfer(from what user, to what user, and the amount)
     // make sure the senders balance > what he is sending
-    boolean transfer(Long senderId, Long recieverId, BigDecimal amountToSend);
+    boolean transfer(Transfer transfer);
     // this will call AccountDao
 
 }
