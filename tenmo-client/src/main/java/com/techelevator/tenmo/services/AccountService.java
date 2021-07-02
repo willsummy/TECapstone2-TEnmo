@@ -25,16 +25,15 @@ public class AccountService {
         API_BASE_URL = url;
     }
 
-    public BigDecimal getBalance() {
+    public BigDecimal getBalance() throws RestClientException {
         BigDecimal balance = new BigDecimal(0);
-        try {
-            balance = restTemplate.exchange(API_BASE_URL + "balance/",
-                    HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
-            System.out.println("Your current account balance is : $" + balance);
-        } catch (RestClientResponseException e) {
-            System.out.println("Cannot get balance.");
+        //try {
+        balance = restTemplate.exchange(API_BASE_URL + "balance/", HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
 
-        }
+//        } catch (RestClientResponseException e) {
+//
+//
+//        }
         return balance;
 
     }
