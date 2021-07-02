@@ -18,7 +18,7 @@ public interface TransferDao {
 
     // sendTransfer(from what user, to what user, and the amount)
     // make sure the senders balance > what he is sending
-    boolean transfer(Transfer transfer);
+    boolean createTransfer(Transfer transfer);
     // this will call AccountDao
 
 }

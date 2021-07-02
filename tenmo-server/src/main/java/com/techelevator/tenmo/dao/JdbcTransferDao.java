@@ -60,48 +60,24 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public boolean transfer(Transfer transfer) {
-        // take in a transfer object, which will specify who its coming from and to
-        // amount, then we can verify amount in account here
-        String sql = "SELECT balance " +
-                "FROM accounts " +
-                "WHERE account_id = ?;";
-        // replace transfer.getAccount_from();
-        BigDecimal senderBalance = jdbcTemplate.queryForObject(sql, BigDecimal.class, transfer.getAccount_from());
+    public boolean createTransfer(Transfer transfer) {
 
-        // pull out account balance of the sender
-        // verify first, return false if not enough
-        // all account start with 1000, but maybe check for nulls later
-        if (senderBalance.compareTo(transfer.getAmount()) < 0) return false;
+        // this sends info to AccountDao to see if the transfer is possible
+        // and also for AccountDao to edit balances
+        // gets response to if it actually did it
 
-        // if true
-        // do add and subtract, return true
-        // take in reciever balance
-        // calculate new balances of each
-        // do sql updates for each
-        sql = "SELECT balance " +
-                "FROM accounts " +
-                "WHERE account_id = ?;";
-        BigDecimal recieverBalance = jdbcTemplate.queryForObject(sql, BigDecimal.class, transfer.getAccount_to());
+        if (accountDao.transferFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
+            // do our sql create row
+            String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                    "VALUES (?, ?, ?, ?, ?);";
 
-        BigDecimal newSenderBalance = senderBalance.subtract(transfer.getAmount());
-        BigDecimal newReceiverBalance = recieverBalance.add(transfer.getAmount());
+            jdbcTemplate.update(sql, 1, 1, transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
+            return true;
+        } else {
+            // don't create anything
+            return false;
 
-        // two updates
-        // sender
-        Long sender = accountDao.findAccountById(transfer.getAccount_from()).getUser_id();
-        accountDao.subtractFromBalance(newSenderBalance, sender);
-
-
-
-        // receiver
-        Long receiver = accountDao.findAccountById(transfer.getAccount_to()).getUser_id();
-        accountDao.addToBalance(newReceiverBalance, receiver);
-
-
-
-        // later this could change to be less simple
-        return true;
+        }
 
 
     }

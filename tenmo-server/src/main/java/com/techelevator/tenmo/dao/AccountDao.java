@@ -21,5 +21,7 @@ public interface AccountDao {
     //BIG DECIMAL. subtractFromBalance (amount to subtract??, int id) based off of account id.
     BigDecimal subtractFromBalance(BigDecimal amount, Long userId);
 
+    boolean transferFunds(BigDecimal amount, Long sender_id, Long receiver_id);
+
     //
 }
