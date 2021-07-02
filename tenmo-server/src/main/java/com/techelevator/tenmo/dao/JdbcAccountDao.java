@@ -25,26 +25,30 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account findAccountById(Long account_id) throws AccountNotFoundException {
-        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE account_id = ?";
+        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE account_id = ?;";
         Account account = null;
-        try {
+        //try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, account_id);
-            account = mapRowToAccount(result);
+            if (result.next()) {
+                account = mapRowToAccount(result);
+            }
 
-         } catch (DataAccessException e) {
-             throw new AccountNotFoundException();
-         }
+
+        // } catch (Exception e) {
+          // e.printStackTrace();
+            // throw new AccountNotFoundException();
+       //  }
         return account;
     }
 
     @Override
     public Account findUserById(Long user_id) throws AccountNotFoundException {
-        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?";
+        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?;";
         Account account = null;
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, user_id);
             account = mapRowToAccount(result);
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             throw new AccountNotFoundException();
         }
         return account;
@@ -136,7 +140,7 @@ public class JdbcAccountDao implements AccountDao {
 
     private Account mapRowToAccount(SqlRowSet result) {
         Account account = new Account();
-        account.setBalance(result.getBigDecimal("balance"));
+        account.setBalance(BigDecimal.valueOf(result.getDouble("balance")));
         account.setAccount_id(result.getLong("account_id"));
         account.setUser_id(result.getLong("user_id"));
         return account;

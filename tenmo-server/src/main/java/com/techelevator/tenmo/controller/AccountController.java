@@ -34,7 +34,7 @@ public class AccountController {
 
     @RequestMapping(path = "/accounts/{id}", method = RequestMethod.GET)
     public Account getBalance(@PathVariable Long id) throws AccountNotFoundException {
-        return accountDao.findUserById(id);
+        return accountDao.findAccountById(id);
     }
 
     //Then we have to list the users. GET list of users from userDAO.
