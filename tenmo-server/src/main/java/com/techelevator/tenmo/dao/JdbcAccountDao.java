@@ -51,13 +51,13 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public BigDecimal getBalance(Long user_id) {
+    public BigDecimal getBalance(Long account_id) {
         String sqlString = "SELECT balance FROM accounts WHERE user_id = ?";
         SqlRowSet results = null;
         BigDecimal balance = null;
 
         try {
-            results = jdbcTemplate.queryForRowSet(sqlString, user_id);
+            results = jdbcTemplate.queryForRowSet(sqlString, account_id);
             if(results.next()) {
                 balance = results.getBigDecimal("balance");
             }
