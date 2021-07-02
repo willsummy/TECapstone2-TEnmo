@@ -36,8 +36,7 @@ public class AccountController {
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
     public BigDecimal getBalance(Principal principal) throws AccountNotFoundException {
         Long user_id = userDao.findIdByUsername(principal.getName());
-        Long account_id = accountDao.findUserById(user_id).getAccount_id();
-        return accountDao.getBalance(account_id);
+        return accountDao.findUserById(user_id).getBalance();
     }
 
     //Then we have to list the users. GET list of users from userDAO.

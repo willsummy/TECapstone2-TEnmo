@@ -16,7 +16,7 @@ public class AccountService {
 
     //private final ConsoleService console = new ConsoleService();
     //public static String AUTH_TOKEN = "";
-    private String API_BASE_URL = "http://localhost:8080/";
+    private String API_BASE_URL;
     private RestTemplate restTemplate = new RestTemplate();
     private AuthenticatedUser authenticatedUser;
 
@@ -28,7 +28,7 @@ public class AccountService {
     public BigDecimal getBalance() {
         BigDecimal balance = new BigDecimal(0);
         try {
-            balance = restTemplate.exchange(API_BASE_URL + "balance" + authenticatedUser.getUser().getId(),
+            balance = restTemplate.exchange(API_BASE_URL + "balance/",
                     HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
             System.out.println("Your current account balance is : $" + balance);
         } catch (RestClientResponseException e) {
