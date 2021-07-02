@@ -23,11 +23,11 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public Account findAccountById(Long user_id) {
-        String sqlString = "SELECT * FROM accounts WHERE user_id = ?";
+    public Account findAccountById(Long account_id) {
+        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE account_id = ?";
         Account account = null;
         try {
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, user_id);
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, account_id);
             account = mapRowToAccount(result);
         } catch (DataAccessException e) {
             System.out.println("Cannot access data");
@@ -37,7 +37,7 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account findUserById(Long user_id) {
-        String sqlString = "SELECT * FROM accounts WHERE user_id = ?";
+        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?";
         Account account = null;
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, user_id);
