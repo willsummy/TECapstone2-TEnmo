@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.Exceptions.AccountNotFoundException;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -60,7 +61,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public boolean createTransfer(Transfer transfer) {
+    public boolean createTransfer(Transfer transfer) throws AccountNotFoundException {
 
         // this sends info to AccountDao to see if the transfer is possible
         // and also for AccountDao to edit balances

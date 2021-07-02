@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.Exceptions.AccountNotFoundException;
 import com.techelevator.tenmo.model.Transfer;
 
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ public interface TransferDao {
 
     // sendTransfer(from what user, to what user, and the amount)
     // make sure the senders balance > what he is sending
-    boolean createTransfer(Transfer transfer);
+    boolean createTransfer(Transfer transfer) throws AccountNotFoundException;
     // this will call AccountDao
 
 }

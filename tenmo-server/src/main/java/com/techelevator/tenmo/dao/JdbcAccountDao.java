@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.Exceptions.AccountNotFoundException;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,27 +24,28 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public Account findAccountById(Long account_id) {
+    public Account findAccountById(Long account_id) throws AccountNotFoundException {
         String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE account_id = ?";
         Account account = null;
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, account_id);
             account = mapRowToAccount(result);
-        } catch (DataAccessException e) {
-            System.out.println("Cannot access data");
-        }
+
+         } catch (DataAccessException e) {
+             throw new AccountNotFoundException();
+         }
         return account;
     }
 
     @Override
-    public Account findUserById(Long user_id) {
+    public Account findUserById(Long user_id) throws AccountNotFoundException {
         String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?";
         Account account = null;
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, user_id);
             account = mapRowToAccount(result);
         } catch (DataAccessException e) {
-            System.out.println("Cannot access data");
+            throw new AccountNotFoundException();
         }
         return account;
     }
@@ -51,7 +53,7 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public BigDecimal getBalance(Long account_id) {
+    public BigDecimal getBalance(Long account_id) throws DataAccessException {
         String sqlString = "SELECT balance FROM accounts WHERE user_id = ?";
         SqlRowSet results = null;
         BigDecimal balance = null;
@@ -69,7 +71,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public BigDecimal addToBalance(BigDecimal amount, Long user_id) {
+    public BigDecimal addToBalance(BigDecimal amount, Long user_id) throws AccountNotFoundException {
        Account account = findAccountById(user_id);
        BigDecimal updatedBalance = account.getBalance().add(amount); // if BigDecimal cannot be into JSON, switch to double or long.
         System.out.println(updatedBalance);
@@ -83,7 +85,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public BigDecimal subtractFromBalance(BigDecimal amount, Long user_id) {
+    public BigDecimal subtractFromBalance(BigDecimal amount, Long user_id) throws AccountNotFoundException {
         Account account = findAccountById(user_id);
         BigDecimal updatedBalance = account.getBalance().subtract(amount);
         String sqlString = "UPDATE accounts SET balance = ? WHERE user_id = ?";
@@ -96,7 +98,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public boolean transferFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) {
+    public boolean transferFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
         // verify sender has enough money
         if (getBalance(sender_account_id).compareTo(amount) == -1) return false;
 

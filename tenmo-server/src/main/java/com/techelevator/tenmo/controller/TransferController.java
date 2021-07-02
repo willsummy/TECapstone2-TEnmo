@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 
+import com.techelevator.tenmo.Exceptions.AccountNotFoundException;
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Transfer;
@@ -34,7 +35,7 @@ public class TransferController {
 
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public boolean sendTransfer(@Valid @RequestBody Transfer transfer) {
+    public boolean sendTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
         return transferDao.createTransfer(transfer);
     }
 

@@ -1,11 +1,13 @@
 package com.techelevator.tenmo.controller;
 
 
+import com.techelevator.tenmo.Exceptions.AccountNotFoundException;
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +33,8 @@ public class AccountController {
     //using a path variable int id
 
     @RequestMapping(path = "/accounts/{id}", method = RequestMethod.GET)
-    public BigDecimal getBalance(@PathVariable Long userId) {
-        return accountDao.getBalance(userId);
+    public Account getBalance(@PathVariable Long id) throws AccountNotFoundException {
+        return accountDao.findUserById(id);
     }
 
     //Then we have to list the users. GET list of users from userDAO.
