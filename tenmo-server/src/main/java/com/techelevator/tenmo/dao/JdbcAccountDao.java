@@ -95,6 +95,42 @@ public class JdbcAccountDao implements AccountDao {
         return account.getBalance();
     }
 
+    @Override
+    public boolean transferFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) {
+        // verify sender has enough money
+        if (getBalance(sender_account_id).compareTo(amount) == -1) return false;
+
+        // if they do
+        // create large sql string with transaction
+        // if any part fails, it gets rolled back
+
+        // do the math before this
+        BigDecimal oldSenderBalance = findAccountById(sender_account_id).getBalance();
+        BigDecimal oldReceiverBalance = findAccountById(receiver_account_id).getBalance();
+        BigDecimal newSenderBalance = oldSenderBalance.subtract(amount);
+        BigDecimal newReceiverBalance = oldReceiverBalance.subtract(amount);
+
+        //two update methods
+        String sql = "START TRANSACTION; " +
+                "UPDATE accounts " +
+                "SET balance = ? " + // new updated sender balance
+                "WHERE account_id = ?; " + // sender_account_id
+                "UPDATE accounts " +
+                "SET balance = ? " + // new updated receiver balance
+                "WHERE account_id = ?; " + // receiver_account_id
+                "COMMIT;";
+
+        jdbcTemplate.update(sql, newSenderBalance, sender_account_id, newReceiverBalance, receiver_account_id);
+
+        if (findAccountById(sender_account_id).getBalance().compareTo(oldSenderBalance) == 0
+        && findAccountById(receiver_account_id).getBalance().compareTo(oldReceiverBalance) == 0
+        ) {
+            return false;
+        }
+
+        // check if any change happened and send boolean based on that
+        return true;
+    }
 
     private Account mapRowToAccount(SqlRowSet result) {
         Account account = new Account();
