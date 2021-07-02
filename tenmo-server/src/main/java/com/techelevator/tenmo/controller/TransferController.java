@@ -35,7 +35,7 @@ public class TransferController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public boolean sendTransfer(@Valid @RequestBody Transfer transfer) {
-        return transferDao.transfer(transfer);
+        return transferDao.createTransfer(transfer);
     }
 
     // We need to send the transfer request.
