@@ -55,18 +55,18 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public BigDecimal getBalance(Long account_id) throws DataAccessException {
-        String sqlString = "SELECT balance FROM accounts WHERE user_id = ?";
-        SqlRowSet results = null;
+        String sqlString = "SELECT balance FROM accounts WHERE account_id = ?";
+        //SqlRowSet results = null;
         BigDecimal balance = null;
 
-        try {
-            results = jdbcTemplate.queryForRowSet(sqlString, account_id);
+      //  try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sqlString, account_id);
             if(results.next()) {
                 balance = results.getBigDecimal("balance");
             }
-        } catch (DataAccessException e) {
+       // } catch (DataAccessException e) {
             System.out.println("Cannot access data");
-        }
+     //   }
 
         return balance;
     }
@@ -111,7 +111,7 @@ public class JdbcAccountDao implements AccountDao {
         BigDecimal oldSenderBalance = findAccountById(sender_account_id).getBalance();
         BigDecimal oldReceiverBalance = findAccountById(receiver_account_id).getBalance();
         BigDecimal newSenderBalance = oldSenderBalance.subtract(amount);
-        BigDecimal newReceiverBalance = oldReceiverBalance.subtract(amount);
+        BigDecimal newReceiverBalance = oldReceiverBalance.add(amount);
 
         //two update methods
         String sql = "START TRANSACTION; " +
