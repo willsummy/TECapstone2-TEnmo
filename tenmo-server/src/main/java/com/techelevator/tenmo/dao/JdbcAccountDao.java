@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+
 import java.math.BigDecimal;
 
 
@@ -15,10 +17,8 @@ public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    public JdbcAccountDao() { }
-
-    public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public JdbcAccountDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
 
@@ -27,17 +27,11 @@ public class JdbcAccountDao implements AccountDao {
     public Account findAccountById(Long account_id) throws AccountNotFoundException {
         String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE account_id = ?;";
         Account account = null;
-        //try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, account_id);
             if (result.next()) {
                 account = mapRowToAccount(result);
             }
 
-
-        // } catch (Exception e) {
-          // e.printStackTrace();
-            // throw new AccountNotFoundException();
-       //  }
         return account;
     }
 
