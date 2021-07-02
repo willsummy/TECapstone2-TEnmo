@@ -7,6 +7,10 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 import io.cucumber.java.bs.A;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -71,11 +75,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+		BigDecimal balance;
 		try {
-			accountService.getBalance();
+			balance = accountService.getBalance();
+			console.displayBalance(balance);
+		} catch (RestClientException re) {
+			System.out.println("No balance to view.");
 		} catch (Exception e) {
 			System.out.println("No accessible funds in account");
 		}
+
 		
 	}
 
