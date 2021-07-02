@@ -28,7 +28,7 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/list_transfers", method = RequestMethod.GET)
-    public List<Transfer> listTransfersByTransferId(Principal principal){
+    public List<Transfer> listTransfersByUserId(Principal principal){
         Long user_id = userDao.findIdByUsername(principal.getName());
         return transferDao.listAllTransfersByUserId(user_id);
 
