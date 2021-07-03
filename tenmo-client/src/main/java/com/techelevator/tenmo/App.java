@@ -94,12 +94,6 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-
-		//call from transfer service, return a list of all transfers from specific user
-
-		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
-		//		ts.transfersList();
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
@@ -119,11 +113,6 @@ public class App {
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-
-		// call from transfer service >>> return list of transfer requests ****OPTIONAL****
-
-		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
-		//		ts.transfersRequestList();
 		
 	}
 
@@ -163,7 +152,6 @@ public class App {
 			return;
 		}
 
-
 		if (transferService.sendBucks(transfer)) {
 			System.out.println("Success");
 		} else System.out.println("Failed");
@@ -174,11 +162,6 @@ public class App {
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 
-		// transfer service >>> request bucks method ****OPTIONAL*****
-
-		// TransferService ts = new TransferService(API_BASE_URL, currentUser);
-		//		ts.requestBucks();
-		
 	}
 	
 	private void exitProgram() {

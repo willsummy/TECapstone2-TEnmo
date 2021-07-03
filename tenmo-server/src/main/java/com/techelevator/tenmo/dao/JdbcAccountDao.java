@@ -41,15 +41,10 @@ public class JdbcAccountDao implements AccountDao {
     public Account findUserById(Long user_id) throws AccountNotFoundException {
         String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?;";
         Account account = null;
-       // try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, user_id);
-
             if(result.next()) {
                 account = mapRowToAccount(result);
             }
-       // } catch (Exception e) {
-       //     throw new AccountNotFoundException();
-     //   }
         return account;
     }
 
@@ -58,18 +53,13 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public BigDecimal getBalance(Long account_id) throws DataAccessException {
         String sqlString = "SELECT balance FROM accounts WHERE account_id = ?";
-        //SqlRowSet results = null;
         BigDecimal balance = null;
 
-      //  try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sqlString, account_id);
             if(results.next()) {
                 balance = results.getBigDecimal("balance");
             }
-       // } catch (DataAccessException e) {
             System.out.println("Cannot access data");
-     //   }
-
         return balance;
     }
 
@@ -102,20 +92,15 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public boolean transferFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
-        // verify sender has enough money
+
         if (getBalance(sender_account_id).compareTo(amount) == -1) return false;
 
-        // if they do
-        // create large sql string with transaction
-        // if any part fails, it gets rolled back
-
-        // do the math before this
         BigDecimal oldSenderBalance = findAccountById(sender_account_id).getBalance();
         BigDecimal oldReceiverBalance = findAccountById(receiver_account_id).getBalance();
         BigDecimal newSenderBalance = oldSenderBalance.subtract(amount);
         BigDecimal newReceiverBalance = oldReceiverBalance.add(amount);
 
-        //two update methods
+
         String sql = "START TRANSACTION; " +
                 "UPDATE accounts " +
                 "SET balance = ? " + // new updated sender balance

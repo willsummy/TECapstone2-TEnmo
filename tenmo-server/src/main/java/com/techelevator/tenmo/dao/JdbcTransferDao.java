@@ -31,7 +31,6 @@ public class JdbcTransferDao implements TransferDao{
                 "FROM transfers " +
                 "JOIN accounts ON account_from = account_id OR account_to = account_id " +
                 "WHERE user_id = ?;";
-        // these are actually looking for account_ids not user_ids
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
 
@@ -63,19 +62,14 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public boolean createTransfer(Transfer transfer) throws AccountNotFoundException {
 
-        // this sends info to AccountDao to see if the transfer is possible
-        // and also for AccountDao to edit balances
-        // gets response to if it actually did it
-
         if (accountDao.transferFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
-            // do our sql create row
+
             String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (?, ?, ?, ?, ?);";
 
             jdbcTemplate.update(sql, 1, 1, transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
             return true;
         } else {
-            // don't create anything
             return false;
 
         }

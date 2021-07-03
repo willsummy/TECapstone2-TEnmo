@@ -105,11 +105,7 @@ public class ConsoleService {
 		//get account to ID
 		//get amount
 		//get transfer ID
-
-		//System.out.println("-------------------------------------------");
-		//System.out.println("Transfers");
-
-
+		
 		for (TransferModel transfer : transfers) {
 			Long transferId = transfer.getTransfer_id();
 			Long senderId = transfer.getAccount_from();

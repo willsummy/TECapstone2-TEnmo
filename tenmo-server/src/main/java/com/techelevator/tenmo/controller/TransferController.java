@@ -45,5 +45,4 @@ public class TransferController {
         return transferDao.createTransfer(transfer);
     }
 
-    // We need to send the transfer request.
 }
