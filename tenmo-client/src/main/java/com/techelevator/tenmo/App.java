@@ -124,14 +124,13 @@ public class App {
 			TransferModel transfer = collectTransferInformation();
 			if (transfer == null) return;
 
+			if (transferService.sendBucks(transfer)) {
+				System.out.println("Success \n");
+				break;
+			} else System.out.println("Failed \n");
 		}
 
-		if (transferService.sendBucks(transfer)) {
-			System.out.println("Success");
-		} else System.out.println("Failed");
 	}
-
-
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
