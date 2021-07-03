@@ -8,14 +8,10 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.view.ConsoleService;
-import io.cucumber.java.bs.A;
-import org.apiguardian.api.API;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Scanner;
 
 public class App {
 
