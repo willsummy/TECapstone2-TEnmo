@@ -82,7 +82,6 @@ public class ConsoleService {
 	}
 
 	public void displayBalance(BigDecimal balance) {
-		System.out.println("Your current account balance is : $" + balance);
 		String printBalance = NumberFormat.getCurrencyInstance().format(balance);
 		System.out.println("Your current account balance is : " + printBalance);
 	}
