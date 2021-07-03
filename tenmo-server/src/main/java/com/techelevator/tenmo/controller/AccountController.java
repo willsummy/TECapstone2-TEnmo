@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -51,6 +52,15 @@ public class AccountController {
     public String findUserNameByAccountID(@PathVariable Long id) {
         return accountDao.getUserNameByAccountID(id);
     }
+
+    @RequestMapping(path = "/usernames", method = RequestMethod.GET)
+    public Map<Long, String> getMapOfUsersWithIds() {
+        return accountDao.getAllAccountIdAndUsernames();
+    }
+
+
+    // return a map with acount_id:username key value pair
+
 
 
 }

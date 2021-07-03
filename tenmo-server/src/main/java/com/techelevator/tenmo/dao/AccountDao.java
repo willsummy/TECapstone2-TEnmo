@@ -4,6 +4,7 @@ import com.techelevator.tenmo.Exceptions.AccountNotFoundException;
 import com.techelevator.tenmo.model.Account;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public interface AccountDao {
 
@@ -26,4 +27,6 @@ public interface AccountDao {
 
     //
     String getUserNameByAccountID(Long account_id);
+
+    public Map<Long, String> getAllAccountIdAndUsernames();
 }
