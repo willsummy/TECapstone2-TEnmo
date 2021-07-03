@@ -1,6 +1,7 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.TransferModel;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.services.TransferService;
 
@@ -93,5 +94,28 @@ public class ConsoleService {
 		for (User user : users) {
 			System.out.println(user.getId() + "    " + user.getUsername());
 		}
+	}
+
+	public void displayTransfers(TransferModel[] transfers) {
+		//get account from ID
+		//get account to ID
+		//get amount
+		//get transfer ID
+
+		//System.out.println("-------------------------------------------");
+		//System.out.println("Transfers");
+
+
+		for (TransferModel transfer : transfers) {
+			Long transferId = transfer.getTransfer_id();
+			Long sender = transfer.getAccount_from();
+			Long receiver = transfer.getAccount_to();
+			BigDecimal amount = transfer.getAmount();
+			System.out.println("id: " + transferId + " " + "From: " + sender + " " + "To: " + receiver + " " + amount);
+
+		}
+
+
+
 	}
 }
