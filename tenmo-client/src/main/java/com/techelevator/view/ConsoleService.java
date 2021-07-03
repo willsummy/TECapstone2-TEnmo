@@ -3,7 +3,9 @@ package com.techelevator.view;
 
 import com.techelevator.tenmo.model.TransferModel;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.TransferService;
+import io.cucumber.java.en_old.Ac;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -88,7 +90,7 @@ public class ConsoleService {
 
 
 
-	public void displayUsers(List<User> users) {
+	public void displayUsers(User[] users) {
 		System.out.println("-------------------------------------------");
 		System.out.println("Users");
 		System.out.println("ID    Name");
@@ -136,4 +138,5 @@ public class ConsoleService {
 			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "Type: " + transferType + " " + "Status: " + transferStatus + " " + "Amount: " + amount);
 		}
 	}
+
 }

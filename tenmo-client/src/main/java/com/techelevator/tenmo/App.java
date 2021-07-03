@@ -137,11 +137,17 @@ public class App {
 		transfer.setTransfer_status_id(1L);
 		transfer.setTransfer_type_id(1L);
 
+		console.displayUsers(accountService.getUsers());
+
 		String userToSendTo = console.getUserInput("Enter User ID to send to");
 
 		try {
 			transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
 			transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
+			if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
+				System.out.println("Cannot send money to self");
+				return;
+			}
 		} catch (Exception e) {
 			System.out.println("Please enter valid ID");
 			return;

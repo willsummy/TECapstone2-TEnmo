@@ -44,9 +44,6 @@ public class AccountService {
         User[] user = null;
         try {
             user = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
-            for (User users : user) {
-                System.out.println(users);
-            }
         } catch (RestClientException e) {
             System.out.println("Cannot retrieve users");
         }
