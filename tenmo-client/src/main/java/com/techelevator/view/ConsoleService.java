@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -109,11 +110,13 @@ public class ConsoleService {
 
 		for (TransferModel transfer : transfers) {
 			Long transferId = transfer.getTransfer_id();
-			String senderName = usernames.get(transfer.getAccount_from());
-			String receiverName = usernames.get(transfer.getAccount_to());
+			Long senderId = transfer.getAccount_from();
+			Long receiverId = transfer.getAccount_to();
+			String senderName = usernames.get(senderId.toString());
+			String receiverName = usernames.get(receiverId.toString());
 
 			BigDecimal amount = transfer.getAmount();
-			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + amount);
+			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "$" + amount);
 
 		}
 
