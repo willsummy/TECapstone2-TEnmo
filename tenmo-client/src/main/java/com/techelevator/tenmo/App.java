@@ -103,7 +103,8 @@ public class App {
 
 		try {
 			transfers = transferService.listTransfers();
-			console.displayTransfers(transfers, usernames);
+			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
+			console.displayTransfers(transfers, usernames, user_account_id);
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
 		} catch (Exception e) {
