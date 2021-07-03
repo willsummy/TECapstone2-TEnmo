@@ -78,4 +78,7 @@ public class ConsoleService {
 	public void displayBalance(BigDecimal balance) {
 		System.out.println("Your current account balance is : $" + balance);
 	}
+
+
+	// method for displaying users
 }

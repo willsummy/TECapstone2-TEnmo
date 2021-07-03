@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.view.ConsoleService;
 
 import org.springframework.http.HttpEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class AccountService {
 
@@ -38,6 +40,17 @@ public class AccountService {
 
     }
 
+    // method listing users
+    /*
+        this needs to call the resttemplate for list users path
+        use get, makeAuthEntity, and User.class
+        returns list of Users
+     */
+    
+    public List<User> listUserAccounts() throws RestClientException {
+        List<User> users = restTemplate.exchange(API_BASE_URL + "list_users", HttpMethod.GET, makeAuthEntity(), List.class).getBody();
+        return users;
+    }
 
 
 
