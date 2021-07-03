@@ -1,6 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.TransferModel;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -8,6 +9,7 @@ import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.view.ConsoleService;
 import io.cucumber.java.bs.A;
+import org.apiguardian.api.API;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 
@@ -15,7 +17,7 @@ import java.math.BigDecimal;
 
 public class App {
 
-private static final String API_BASE_URL = "http://localhost:8080/";
+	private static final String API_BASE_URL = "http://localhost:8080/";
     
     private static final String MENU_OPTION_EXIT = "Exit";
     private static final String LOGIN_MENU_OPTION_REGISTER = "Register";
@@ -96,7 +98,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
 		//		ts.transfersList();
-		
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+
+		TransferModel[] transfers = null;
+
+		try {
+			transfers = transferService.listTransfers();
+			console.displayTransfers(transfers);
+		} catch (RestClientException re) {
+			System.out.println("Issue with the Rest API");
+		} catch (Exception e) {
+			System.out.println("Issue with transfer history in App class");
+		}
 	}
 
 	private void viewPendingRequests() {

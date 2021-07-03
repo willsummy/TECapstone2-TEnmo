@@ -25,4 +25,5 @@ public interface AccountDao {
     boolean transferFunds(BigDecimal amount, Long sender_id, Long receiver_id) throws AccountNotFoundException;
 
     //
+    String getUserNameByAccountID(Long account_id);
 }

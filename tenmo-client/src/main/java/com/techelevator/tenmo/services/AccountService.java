@@ -52,6 +52,10 @@ public class AccountService {
         return user;
     }
 
+    public String findUserNameByAccountID(Long account_id) throws RestClientException {
+        return restTemplate.exchange(API_BASE_URL + "user/account/" + account_id, HttpMethod.GET, makeAuthEntity(), String.class ).getBody();
+    }
+
 
 
 
