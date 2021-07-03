@@ -1,10 +1,14 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.services.TransferService;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -77,5 +81,17 @@ public class ConsoleService {
 
 	public void displayBalance(BigDecimal balance) {
 		System.out.println("Your current account balance is : $" + balance);
+	}
+
+
+
+	public void displayUsers(List<User> users) {
+		System.out.println("-------------------------------------------");
+		System.out.println("Users");
+		System.out.println("ID    Name");
+		System.out.println("-------------------------------------------");
+		for (User user : users) {
+			System.out.println(user.getId() + "    " + user.getUsername());
+		}
 	}
 }
