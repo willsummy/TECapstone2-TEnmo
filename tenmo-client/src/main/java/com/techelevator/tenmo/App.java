@@ -127,12 +127,11 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		// transfer service >>> send bucks method
-
-		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
-		//		ts.sendBucks();
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		transferService.sendBucks();
 	}
+
+
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
