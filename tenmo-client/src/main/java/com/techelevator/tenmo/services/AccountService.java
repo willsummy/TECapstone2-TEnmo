@@ -61,6 +61,10 @@ public class AccountService {
         return restTemplate.exchange(API_BASE_URL + "usernames", HttpMethod.GET, makeAuthEntity(), Map.class).getBody();
     }
 
+    public Long getAccountIdFromUserId(Long user_id) {
+        return restTemplate.exchange(API_BASE_URL + "/account/user/" + user_id, HttpMethod.GET, makeAuthEntity(), Long.class).getBody();
+    }
+
 
     private HttpEntity makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();

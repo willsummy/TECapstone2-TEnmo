@@ -58,6 +58,12 @@ public class AccountController {
         return accountDao.getAllAccountIdAndUsernames();
     }
 
+    @RequestMapping(path = "/account/user/{id}", method = RequestMethod.GET)
+    public Long getAccountIdByUserId(@PathVariable Long id) throws AccountNotFoundException {
+        Account account = accountDao.findUserById(id);
+        return account.getAccount_id();
+    }
+
 
     // return a map with acount_id:username key value pair
 
