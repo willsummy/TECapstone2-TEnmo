@@ -1,18 +1,15 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.TransferModel;
 import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.TransferService;
-import io.cucumber.java.en_old.Ac;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Locale;
+import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Scanner;
 
