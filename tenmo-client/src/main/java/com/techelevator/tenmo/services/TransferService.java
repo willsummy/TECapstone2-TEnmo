@@ -43,6 +43,8 @@ public class TransferService {
         return restTemplate.exchange(BASE_URL + "list_transfers", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
     }
 
+
+
         private HttpEntity makeAuthEntity() {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(authenticatedUser.getToken());
