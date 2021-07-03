@@ -94,4 +94,5 @@ public class ConsoleService {
 			System.out.println(user.getId() + "    " + user.getUsername());
 		}
 	}
+
 }

@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.view.ConsoleService;
 
 import org.springframework.http.HttpEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class AccountService {
 
@@ -36,6 +38,18 @@ public class AccountService {
 //        }
         return balance;
 
+    }
+    public User[] getUsers() {
+        User[] user = null;
+        try {
+            user = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+            for (User users : user) {
+                System.out.println(users);
+            }
+        } catch (RestClientException e) {
+            System.out.println("Cannot retrieve users");
+        }
+        return user;
     }
 
 
