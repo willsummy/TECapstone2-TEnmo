@@ -98,7 +98,7 @@ public class ConsoleService {
 		}
 	}
 
-	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames) {
+	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames, Long user_account_id) {
 		//get account from ID
 		//get account to ID
 		//get amount
