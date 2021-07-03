@@ -90,21 +90,39 @@ public class App {
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
+
+		//call from transfer service, return a list of all transfers from specific user
+
+		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
+		//		ts.transfersList();
 		
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
+
+		// call from transfer service >>> return list of transfer requests ****OPTIONAL****
+
+		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
+		//		ts.transfersRequestList();
 		
 	}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+		// transfer service >>> send bucks method
+
+		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
+		//		ts.sendBucks();
 	}
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
+
+		// transfer service >>> request bucks method ****OPTIONAL*****
+
+		// TransferService ts = new TransferService(API_BASE_URL, currentUser);
+		//		ts.requestBucks();
 		
 	}
 	
