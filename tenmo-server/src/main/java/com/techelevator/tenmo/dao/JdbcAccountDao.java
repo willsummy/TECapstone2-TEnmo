@@ -135,6 +135,26 @@ public class JdbcAccountDao implements AccountDao {
         return true;
     }
 
+    @Override
+    public String getUserNameByAccountID(Long account_id) {
+        String username = null;
+
+        String sql = "SELECT username " +
+                "FROM users u" +
+                "JOIN accounts a ON u.user_id = a.user_id " +
+                "JOIN transfers t ON a.account_id = t.account_from OR a.account_id = t.account_to " +
+                "WHERE a.account_id = ?;";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account_id);
+
+        if (results.next()) {
+            username = results.getString("username");
+        }
+
+
+        return username;
+    }
+
     private Account mapRowToAccount(SqlRowSet result) {
         Account account = new Account();
         account.setBalance(BigDecimal.valueOf(result.getDouble("balance")));
@@ -142,6 +162,8 @@ public class JdbcAccountDao implements AccountDao {
         account.setUser_id(result.getLong("user_id"));
         return account;
     }
+
+
 
 }
 
