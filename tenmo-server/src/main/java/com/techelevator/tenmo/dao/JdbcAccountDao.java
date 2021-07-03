@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
@@ -153,6 +155,26 @@ public class JdbcAccountDao implements AccountDao {
 
 
         return username;
+    }
+
+    @Override
+    public Map<Long, String> getAllAccountIdAndUsernames() {
+        Map<Long, String> map = new HashMap<>();
+
+        String sql = "SELECT DISTINCT u.username, a.account_id " +
+                "FROM users u" +
+                "JOIN accounts a ON u.user_id = a.user_id " +
+                "JOIN transfers t ON a.account_id = t.account_from OR a.account_id = t.account_to;";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+
+        while (results.next()) {
+            Long id = results.getLong("account_id");
+            String username = results.getString("username");
+            map.put(id, username);
+        }
+
+        return map;
     }
 
     private Account mapRowToAccount(SqlRowSet result) {

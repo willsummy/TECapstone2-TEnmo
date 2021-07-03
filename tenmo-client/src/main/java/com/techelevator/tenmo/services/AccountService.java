@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class AccountService {
 
@@ -44,8 +45,9 @@ public class AccountService {
         return restTemplate.exchange(API_BASE_URL + "user/account/" + account_id, HttpMethod.GET, makeAuthEntity(), String.class ).getBody();
     }
 
-
-
+    public Map<Long, String> getMapOfUsersWithIds() {
+        return restTemplate.exchange(API_BASE_URL + "usernames", HttpMethod.GET, makeAuthEntity(), Map.class).getBody();
+    }
 
 
     private HttpEntity makeAuthEntity() {

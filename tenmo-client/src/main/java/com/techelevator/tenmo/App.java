@@ -14,6 +14,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class App {
 
@@ -99,12 +100,15 @@ public class App {
 		//TransferService ts = new TransferService(API_BASE_URL, currentUser);
 		//		ts.transfersList();
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
-		TransferModel[] transfers = null;
+		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
+
+		TransferModel[] transfers;
 
 		try {
 			transfers = transferService.listTransfers();
-			console.displayTransfers(transfers);
+			console.displayTransfers(transfers, usernames);
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
 		} catch (Exception e) {
