@@ -117,36 +117,13 @@ public class App {
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
-		TransferModel transfer = new TransferModel();
-		Scanner scanner = new Scanner(System.in);
+		console.displayUsers(accountService.getUsers(), currentUser);
+		System.out.println();
 
-		transfer.setTransfer_status_id(1L);
-		transfer.setTransfer_type_id(1L);
+		while (true) {
+			TransferModel transfer = collectTransferInformation();
+			if (transfer == null) return;
 
-		console.displayUsers(accountService.getUsers());
-
-		String userToSendTo = console.getUserInput("Enter User ID to send to");
-
-		try {
-			transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
-			transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
-			if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
-				System.out.println("Cannot send money to self");
-				return;
-			}
-		} catch (Exception e) {
-			System.out.println("Please enter valid ID");
-			return;
-		}
-
-		String amount = console.getUserInput("Enter amount to send");
-
-		try {
-			BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
-			transfer.setAmount(amountToSend);
-		} catch (Exception e) {
-			System.out.println("Please enter in the format of 10.00 for example");
-			return;
 		}
 
 		if (transferService.sendBucks(transfer)) {
