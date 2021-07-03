@@ -88,13 +88,17 @@ public class ConsoleService {
 
 
 
-	public void displayUsers(User[] users) {
+	public void displayUsers(User[] users, AuthenticatedUser currentUser) {
 		System.out.println("-------------------------------------------");
 		System.out.println("Users");
-		System.out.println("ID    Name");
+		System.out.printf("%-10s", "ID");
+		System.out.println("Name");
 		System.out.println("-------------------------------------------");
 		for (User user : users) {
-			System.out.println(user.getId() + "    " + user.getUsername());
+			if (user.getUsername().equals(currentUser.getUser().getUsername())) continue;
+			// formatting left aligns and pads to the right
+			System.out.printf("%-10s", user.getId().toString());
+			System.out.println(user.getUsername());
 		}
 	}
 
