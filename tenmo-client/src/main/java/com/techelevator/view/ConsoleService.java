@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -96,7 +97,7 @@ public class ConsoleService {
 		}
 	}
 
-	public void displayTransfers(TransferModel[] transfers) {
+	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames) {
 		//get account from ID
 		//get account to ID
 		//get amount
@@ -108,14 +109,28 @@ public class ConsoleService {
 
 		for (TransferModel transfer : transfers) {
 			Long transferId = transfer.getTransfer_id();
-			Long sender = transfer.getAccount_from();
-			Long receiver = transfer.getAccount_to();
+			String senderName = usernames.get(transfer.getAccount_from());
+			String receiverName = usernames.get(transfer.getAccount_to());
+
 			BigDecimal amount = transfer.getAmount();
-			System.out.println("id: " + transferId + " " + "From: " + sender + " " + "To: " + receiver + " " + amount);
+			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + amount);
 
 		}
 
 
 
+	}
+
+	public void transferDetails(TransferModel[] transfers, Map<Long, String> usernames ) {
+		for (TransferModel transfer : transfers) {
+			Long transferId = transfer.getTransfer_id();
+			String senderName = usernames.get(transfer.getAccount_from());
+			String receiverName = usernames.get(transfer.getAccount_to());
+			Long transferType = transfer.getTransfer_type_id();
+			Long transferStatus = transfer.getTransfer_status_id();
+			BigDecimal amount = transfer.getAmount();
+
+			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "Type: " + transferType + " " + "Status: " + transferStatus + " " + "Amount: " + amount);
+		}
 	}
 }
