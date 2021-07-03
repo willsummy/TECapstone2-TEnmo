@@ -196,4 +196,57 @@ public class App {
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
+
+
+	// helper method for sendBucks()
+	private TransferModel collectTransferInformation() {
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		TransferModel transfer = new TransferModel();
+
+		transfer.setTransfer_status_id(1L);
+		transfer.setTransfer_type_id(1L);
+
+
+
+		while (true) {
+			String userToSendTo = console.getUserInput("Enter User ID to send to (Enter X to quit screen)");
+			System.out.println();
+			try {
+
+				// give the user the option to leave this menu if they don't want to send money
+				if (userToSendTo.equals("X")) return null;
+
+				transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+				transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
+				if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
+					System.out.println("Cannot send money to self \n");
+					continue;
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter valid ID \n");
+				continue;
+			}
+		}
+
+		while (true) {
+			String amount = console.getUserInput("Enter amount to send");
+			System.out.println();
+
+			try {
+				BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
+				transfer.setAmount(amountToSend);
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter a money amount (ex. 10.00)\n");
+
+				continue;
+			}
+		}
+
+
+		return transfer;
+
+	}
 }
