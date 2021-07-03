@@ -112,7 +112,27 @@ public class ConsoleService {
 			String receiverName = usernames.get(receiverId.toString());
 
 			BigDecimal amount = transfer.getAmount();
-			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "$" + amount);
+
+			// check if user is sender or receiver
+			// print only the other user involved
+
+			/*
+			formatting the print
+			%-12s specifies left alignment and padding
+			%n specifies newline
+			 */
+			if (transfer.getAccount_from().equals(user_account_id)) {
+				System.out.printf("%-12s", "ID: " + transferId);
+				System.out.printf("%-15s", "To: " + receiverName);
+				System.out.printf("%-15s%n", "Amount: $" + amount);
+			} else if (transfer.getAccount_to().equals(user_account_id)) {
+				System.out.printf("%-12s", "ID: " + transferId);
+				System.out.printf("%-15s", "From: " + senderName);
+				System.out.printf("%-15s%n", "Amount: $" + amount);
+			} else System.out.println("Issue in ConsoleService displayTransfers method.");
+
+
+
 
 		}
 
