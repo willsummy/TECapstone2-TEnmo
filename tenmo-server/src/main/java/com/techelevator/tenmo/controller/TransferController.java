@@ -27,14 +27,14 @@ public class TransferController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(path = "/list_transfers", method = RequestMethod.GET)
+    @RequestMapping(path = "/transfers/list", method = RequestMethod.GET)
     public List<Transfer> listTransfersByUserId(Principal principal){
         Long user_id = userDao.findIdByUsername(principal.getName());
         return transferDao.listAllTransfersByUserId(user_id);
 
     }
 
-    @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
     public Transfer getTransfer(@PathVariable Long id) {
         return transferDao.getTransferDetailsByTransferId(id);
     }
