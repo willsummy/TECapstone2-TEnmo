@@ -142,9 +142,9 @@ public class JdbcAccountDao implements AccountDao {
         String username = null;
 
         String sql = "SELECT username " +
-                "FROM users u" +
-                "JOIN accounts a ON u.user_id = a.user_id " +
-                "JOIN transfers t ON a.account_id = t.account_from OR a.account_id = t.account_to " +
+                "FROM users u " +
+                "LEFT JOIN accounts a ON u.user_id = a.user_id " +
+                "LEFT JOIN transfers t ON a.account_id = t.account_from OR a.account_id = t.account_to " +
                 "WHERE a.account_id = ?;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account_id);
@@ -162,9 +162,9 @@ public class JdbcAccountDao implements AccountDao {
         Map<Long, String> map = new HashMap<>();
 
         String sql = "SELECT DISTINCT u.username, a.account_id " +
-                "FROM users u" +
-                "JOIN accounts a ON u.user_id = a.user_id " +
-                "JOIN transfers t ON a.account_id = t.account_from OR a.account_id = t.account_to;";
+                "FROM users u " +
+                "LEFT JOIN accounts a ON u.user_id = a.user_id " +
+                "LEFT JOIN transfers t ON a.account_id = t.account_from OR a.account_id = t.account_to;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
 

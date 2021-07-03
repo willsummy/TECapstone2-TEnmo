@@ -52,11 +52,11 @@ public class TransferService {
                 } catch (Exception e) {
                     System.out.println("Please enter proper format for amount for transfer");
                 }
-                String transfers = restTemplate.exchange(API_BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), String.class).getBody();
+                Boolean transfers = restTemplate.postForEntity(API_BASE_URL + "/transfer", HttpMethod.POST, Boolean.class, makeTransferEntity(transfer)).getBody();
                 System.out.println(transfers);
             }
         } catch (Exception e) {
-            System.out.println("Error in system");
+            e.printStackTrace();
         }
     }
 
