@@ -1,9 +1,19 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.TransferModel;
+import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.services.AccountService;
+import com.techelevator.tenmo.services.TransferService;
+import io.cucumber.java.en_old.Ac;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -73,4 +83,56 @@ public class ConsoleService {
 		} while(result == null);
 		return result;
 	}
+
+	public void displayBalance(BigDecimal balance) {
+		System.out.println("Your current account balance is : $" + balance);
+	}
+
+
+
+	public void displayUsers(User[] users) {
+		System.out.println("-------------------------------------------");
+		System.out.println("Users");
+		System.out.println("ID    Name");
+		System.out.println("-------------------------------------------");
+		for (User user : users) {
+			System.out.println(user.getId() + "    " + user.getUsername());
+		}
+	}
+
+	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames) {
+		//get account from ID
+		//get account to ID
+		//get amount
+		//get transfer ID
+		
+		for (TransferModel transfer : transfers) {
+			Long transferId = transfer.getTransfer_id();
+			Long senderId = transfer.getAccount_from();
+			Long receiverId = transfer.getAccount_to();
+			String senderName = usernames.get(senderId.toString());
+			String receiverName = usernames.get(receiverId.toString());
+
+			BigDecimal amount = transfer.getAmount();
+			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "$" + amount);
+
+		}
+
+
+
+	}
+
+	public void transferDetails(TransferModel[] transfers, Map<Long, String> usernames ) {
+		for (TransferModel transfer : transfers) {
+			Long transferId = transfer.getTransfer_id();
+			String senderName = usernames.get(transfer.getAccount_from());
+			String receiverName = usernames.get(transfer.getAccount_to());
+			Long transferType = transfer.getTransfer_type_id();
+			Long transferStatus = transfer.getTransfer_status_id();
+			BigDecimal amount = transfer.getAmount();
+
+			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "Type: " + transferType + " " + "Status: " + transferStatus + " " + "Amount: " + amount);
+		}
+	}
+
 }

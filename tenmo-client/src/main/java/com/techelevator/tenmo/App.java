@@ -1,14 +1,25 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.TransferModel;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.view.ConsoleService;
+import io.cucumber.java.bs.A;
+import org.apiguardian.api.API;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Scanner;
 
 public class App {
 
-private static final String API_BASE_URL = "http://localhost:8080/";
+	private static final String API_BASE_URL = "http://localhost:8080/";
     
     private static final String MENU_OPTION_EXIT = "Exit";
     private static final String LOGIN_MENU_OPTION_REGISTER = "Register";
@@ -68,13 +79,36 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+		BigDecimal balance;
+		try {
+			balance = accountService.getBalance();
+			console.displayBalance(balance);
+		} catch (RestClientException re) {
+			System.out.println("No balance to view.");
+		} catch (Exception e) {
+			System.out.println("No accessible funds in account");
+		}
+
 		
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
+
+		TransferModel[] transfers;
+
+		try {
+			transfers = transferService.listTransfers();
+			console.displayTransfers(transfers, usernames);
+		} catch (RestClientException re) {
+			System.out.println("Issue with the Rest API");
+		} catch (Exception e) {
+			System.out.println("Issue with transfer history in App class");
+		}
 	}
 
 	private void viewPendingRequests() {
@@ -83,13 +117,51 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		TransferModel transfer = new TransferModel();
+		Scanner scanner = new Scanner(System.in);
+
+		transfer.setTransfer_status_id(1L);
+		transfer.setTransfer_type_id(1L);
+
+		console.displayUsers(accountService.getUsers());
+
+		String userToSendTo = console.getUserInput("Enter User ID to send to");
+
+		try {
+			transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+			transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
+			if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
+				System.out.println("Cannot send money to self");
+				return;
+			}
+		} catch (Exception e) {
+			System.out.println("Please enter valid ID");
+			return;
+		}
+
+		String amount = console.getUserInput("Enter amount to send");
+
+		try {
+			BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
+			transfer.setAmount(amountToSend);
+		} catch (Exception e) {
+			System.out.println("Please enter in the format of 10.00 for example");
+			return;
+		}
+
+		if (transferService.sendBucks(transfer)) {
+			System.out.println("Success");
+		} else System.out.println("Failed");
 	}
+
+
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-		
+
 	}
 	
 	private void exitProgram() {
