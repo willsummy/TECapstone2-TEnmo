@@ -46,7 +46,7 @@ public class AccountService {
         use get, makeAuthEntity, and User.class
         returns list of Users
      */
-    
+
     public List<User> listUserAccounts() throws RestClientException {
         List<User> users = restTemplate.exchange(API_BASE_URL + "list_users", HttpMethod.GET, makeAuthEntity(), List.class).getBody();
         return users;
