@@ -107,6 +107,13 @@ public class ConsoleService {
 		//get account to ID
 		//get amount
 		//get transfer ID
+
+		System.out.println("-------------------------------------------");
+		System.out.println("Transfers");
+		System.out.printf("%-10s", "ID");
+		System.out.printf("%-15s", "From/To");
+		System.out.println("Amount");
+		System.out.println("-------------------------------------------");
 		
 		for (TransferModel transfer : transfers) {
 			Long transferId = transfer.getTransfer_id();
@@ -115,7 +122,8 @@ public class ConsoleService {
 			String senderName = usernames.get(senderId.toString());
 			String receiverName = usernames.get(receiverId.toString());
 
-			BigDecimal amount = transfer.getAmount();
+			String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount());
+			//BigDecimal amount = transfer.getAmount();
 
 			// check if user is sender or receiver
 			// print only the other user involved
@@ -126,13 +134,13 @@ public class ConsoleService {
 			%n specifies newline
 			 */
 			if (transfer.getAccount_from().equals(user_account_id)) {
-				System.out.printf("%-12s", "ID: " + transferId);
+				System.out.printf("%-10s", transferId);
 				System.out.printf("%-15s", "To: " + receiverName);
-				System.out.printf("%-15s%n", "Amount: $" + amount);
+				System.out.printf("%-15s%n", amount);
 			} else if (transfer.getAccount_to().equals(user_account_id)) {
-				System.out.printf("%-12s", "ID: " + transferId);
+				System.out.printf("%-10s", transferId);
 				System.out.printf("%-15s", "From: " + senderName);
-				System.out.printf("%-15s%n", "Amount: $" + amount);
+				System.out.printf("%-15s%n", amount);
 			} else System.out.println("Issue in ConsoleService displayTransfers method.");
 
 
