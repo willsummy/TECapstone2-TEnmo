@@ -43,7 +43,7 @@ public class TransferService {
                 }
             }
             System.out.println("Enter ID of user you are sending to (0 to cancel): ");
-            transfer.setAccount_to(Long.parseLong(scanner.nextLine()));
+            transfer.setAccount_to(scanner.nextLong());
             transfer.setAccount_from(authenticatedUser.getUser().getId());
             if (transfer.getAccount_to() != 0) {
                 System.out.print("Enter amount: ");
@@ -52,7 +52,7 @@ public class TransferService {
                 } catch (Exception e) {
                     System.out.println("Please enter proper format for amount for transfer");
                 }
-                Boolean transfers = restTemplate.postForEntity(API_BASE_URL + "/transfer", HttpMethod.POST, Boolean.class, makeTransferEntity(transfer)).getBody();
+                Boolean transfers = restTemplate.postForObject(API_BASE_URL + "transfer", HttpMethod.POST, Boolean.class, makeTransferEntity(transfer));
                 System.out.println(transfers);
             }
         } catch (Exception e) {
