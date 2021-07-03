@@ -73,7 +73,7 @@ public class TransferService {
 
     // send transfer method, http get method to API
     public TransferModel[] listTransfers() throws RestClientException {
-        return restTemplate.exchange(BASE_URL + "list_transfers", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+        return restTemplate.exchange(API_BASE_URL + "list_transfers", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
     }
 
 
