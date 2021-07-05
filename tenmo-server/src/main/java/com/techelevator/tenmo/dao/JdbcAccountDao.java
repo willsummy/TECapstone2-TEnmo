@@ -93,7 +93,7 @@ public class JdbcAccountDao implements AccountDao {
 //    }
 
     @Override
-    public boolean transferFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
+    public boolean sendFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
 
         if (getBalance(sender_account_id).compareTo(amount) == -1) return false;
 
