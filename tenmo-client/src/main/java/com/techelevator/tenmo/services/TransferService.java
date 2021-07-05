@@ -22,11 +22,14 @@ public class TransferService {
     }
 
     public boolean sendBucks(TransferModel transfer) {
-        return restTemplate.exchange(API_BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
+        return restTemplate.exchange(API_BASE_URL + "transfer/send", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
+    }
+
+    public boolean requestBucks(TransferModel transfer) {
+        return restTemplate.exchange(API_BASE_URL + "transfer/request", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
     }
 
     // send transfer method, http get method to API
-    public TransferModel[] listTransfers() throws RestClientException {
         return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
     }
 
