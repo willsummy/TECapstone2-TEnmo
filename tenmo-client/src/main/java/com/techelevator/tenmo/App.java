@@ -227,15 +227,14 @@ public class App {
 		return new UserCredentials(username, password);
 	}
 
-
 	// helper method for sendBucks()
-	private TransferModel collectTransferInformation() {
+	private TransferModel collectSendTransferInformation() {
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
 		TransferModel transfer = new TransferModel();
 
-		transfer.setTransfer_status_id(1L);
-		transfer.setTransfer_type_id(1L);
+		transfer.setTransfer_status_id(2L); // 2 represents approved status
+		transfer.setTransfer_type_id(2L); // 2 represents sent type
 
 
 
