@@ -22,11 +22,13 @@ public class TransferService {
     }
 
     public boolean sendBucks(TransferModel transfer) {
-
         return restTemplate.exchange(API_BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
     }
 
-
+    // send transfer method, http get method to API
+    public TransferModel[] listTransfers() throws RestClientException {
+        return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+    }
 
 
     private HttpEntity<TransferModel> makeTransferEntity(TransferModel transferModel) {
@@ -38,20 +40,14 @@ public class TransferService {
     }
 
 
-    // send transfer method, http get method to API
-    public TransferModel[] listTransfers() throws RestClientException {
-        return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+
+    private HttpEntity makeAuthEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        HttpEntity entity = new HttpEntity<>(headers);
+        return entity;
     }
-
-
-
-        private HttpEntity makeAuthEntity() {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(authenticatedUser.getToken());
-            HttpEntity entity = new HttpEntity<>(headers);
-            return entity;
-        }
-    }
+}
 
 
 

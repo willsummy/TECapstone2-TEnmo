@@ -93,6 +93,7 @@ public class App {
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
+		// account ids and usernames
 		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
 
 		TransferModel[] transfers;
