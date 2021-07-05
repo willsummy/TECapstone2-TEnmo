@@ -78,19 +78,32 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public boolean createTransfer(Transfer transfer) throws AccountNotFoundException {
+    public boolean createTransfer(Transfer transfer, int type) throws AccountNotFoundException {
 
-        if (accountDao.transferFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
+        if (type == 2) { // sending transfer
+            if (accountDao.sendFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
 
+                String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                        "VALUES (?, ?, ?, ?, ?);";
+
+                jdbcTemplate.update(sql, 2, 2, transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
+                return true;
+            } else {
+                return false;
+
+            }
+        } else if (type == 1) { //receiving transfer
             String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (?, ?, ?, ?, ?);";
 
             jdbcTemplate.update(sql, 1, 1, transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
             return true;
-        } else {
-            return false;
+            // create a pending request transfer in transfers table, no funds are moved yet
 
-        }
+        } else return false;
+
+
+
 
 
     }
