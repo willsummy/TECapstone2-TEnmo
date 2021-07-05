@@ -61,6 +61,9 @@ public class TransferController {
         return false;
     }
 
+    @RequestMapping(path = "transfer/reject", method = RequestMethod.PUT) // editing a transfer to rejected
+    public boolean rejectTransfer(@Valid @RequestBody Transfer transfer) {
+        return false;
     }
 
 }
