@@ -35,14 +35,14 @@ public class AccountController {
         return accountDao.findUserById(user_id).getBalance();
     }
 
-    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    @RequestMapping(path = "/users/list", method = RequestMethod.GET)
     public List<User> listUsers(){
         return userDao.findAll();
     }
 
-    @RequestMapping(path = "/user/account/{id}", method = RequestMethod.GET)
-    public String findUserNameByAccountID(@PathVariable Long id) {
-        return accountDao.getUserNameByAccountID(id);
+    @RequestMapping(path = "/username/{account_id}", method = RequestMethod.GET)
+    public String findUserNameByAccountID(@PathVariable Long account_id) {
+        return accountDao.getUserNameByAccountID(account_id);
     }
 
     @RequestMapping(path = "/usernames", method = RequestMethod.GET)
@@ -50,9 +50,9 @@ public class AccountController {
         return accountDao.getAllAccountIdAndUsernames();
     }
 
-    @RequestMapping(path = "/account/user/{id}", method = RequestMethod.GET)
-    public Long getAccountIdByUserId(@PathVariable Long id) throws AccountNotFoundException {
-        Account account = accountDao.findUserById(id);
+    @RequestMapping(path = "/account/{user_id}", method = RequestMethod.GET)
+    public Long getAccountIdByUserId(@PathVariable Long user_id) throws AccountNotFoundException {
+        Account account = accountDao.findUserById(user_id);
         return account.getAccount_id();
     }
 

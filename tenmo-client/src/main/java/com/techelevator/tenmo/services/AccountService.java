@@ -34,15 +34,16 @@ public class AccountService {
     public User[] getUsers() {
         User[] user = null;
         try {
-            user = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+            user = restTemplate.exchange(API_BASE_URL + "users/list", HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
         } catch (RestClientException e) {
             System.out.println("Cannot retrieve users");
         }
         return user;
     }
 
+    // probably don't need this one
     public String findUserNameByAccountID(Long account_id) throws RestClientException {
-        return restTemplate.exchange(API_BASE_URL + "user/account/" + account_id, HttpMethod.GET, makeAuthEntity(), String.class ).getBody();
+        return restTemplate.exchange(API_BASE_URL + "username/" + account_id, HttpMethod.GET, makeAuthEntity(), String.class ).getBody();
     }
 
     public Map<Long, String> getMapOfUsersWithIds() {
@@ -50,7 +51,7 @@ public class AccountService {
     }
 
     public Long getAccountIdFromUserId(Long user_id) {
-        return restTemplate.exchange(API_BASE_URL + "/account/user/" + user_id, HttpMethod.GET, makeAuthEntity(), Long.class).getBody();
+        return restTemplate.exchange(API_BASE_URL + "/account/" + user_id, HttpMethod.GET, makeAuthEntity(), Long.class).getBody();
     }
 
 

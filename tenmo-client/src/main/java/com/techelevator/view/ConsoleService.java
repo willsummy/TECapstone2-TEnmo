@@ -1,18 +1,15 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.TransferModel;
 import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.TransferService;
-import io.cucumber.java.en_old.Ac;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Locale;
+import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -85,26 +82,38 @@ public class ConsoleService {
 	}
 
 	public void displayBalance(BigDecimal balance) {
-		System.out.println("Your current account balance is : $" + balance);
+		String printBalance = NumberFormat.getCurrencyInstance().format(balance);
+		System.out.println("Your current account balance is : " + printBalance);
 	}
 
 
 
-	public void displayUsers(User[] users) {
+	public void displayUsers(User[] users, AuthenticatedUser currentUser) {
 		System.out.println("-------------------------------------------");
 		System.out.println("Users");
-		System.out.println("ID    Name");
+		System.out.printf("%-10s", "ID");
+		System.out.println("Name");
 		System.out.println("-------------------------------------------");
 		for (User user : users) {
-			System.out.println(user.getId() + "    " + user.getUsername());
+			if (user.getUsername().equals(currentUser.getUser().getUsername())) continue;
+			// formatting left aligns and pads to the right
+			System.out.printf("%-10s", user.getId().toString());
+			System.out.println(user.getUsername());
 		}
 	}
 
-	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames) {
+	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames, Long user_account_id) {
 		//get account from ID
 		//get account to ID
 		//get amount
 		//get transfer ID
+
+		System.out.println("-------------------------------------------");
+		System.out.println("Transfers");
+		System.out.printf("%-10s", "ID");
+		System.out.printf("%-15s", "From/To");
+		System.out.println("Amount");
+		System.out.println("-------------------------------------------");
 		
 		for (TransferModel transfer : transfers) {
 			Long transferId = transfer.getTransfer_id();
@@ -113,8 +122,29 @@ public class ConsoleService {
 			String senderName = usernames.get(senderId.toString());
 			String receiverName = usernames.get(receiverId.toString());
 
-			BigDecimal amount = transfer.getAmount();
-			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "$" + amount);
+			String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount());
+			//BigDecimal amount = transfer.getAmount();
+
+			// check if user is sender or receiver
+			// print only the other user involved
+
+			/*
+			formatting the print
+			%-12s specifies left alignment and padding
+			%n specifies newline
+			 */
+			if (transfer.getAccount_from().equals(user_account_id)) {
+				System.out.printf("%-10s", transferId);
+				System.out.printf("%-15s", "To: " + receiverName);
+				System.out.printf("%-15s%n", amount);
+			} else if (transfer.getAccount_to().equals(user_account_id)) {
+				System.out.printf("%-10s", transferId);
+				System.out.printf("%-15s", "From: " + senderName);
+				System.out.printf("%-15s%n", amount);
+			} else System.out.println("Issue in ConsoleService displayTransfers method.");
+
+
+
 
 		}
 

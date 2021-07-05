@@ -8,14 +8,10 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.view.ConsoleService;
-import io.cucumber.java.bs.A;
-import org.apiguardian.api.API;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Scanner;
 
 public class App {
 
@@ -103,7 +99,8 @@ public class App {
 
 		try {
 			transfers = transferService.listTransfers();
-			console.displayTransfers(transfers, usernames);
+			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
+			console.displayTransfers(transfers, usernames, user_account_id);
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
 		} catch (Exception e) {
@@ -120,44 +117,20 @@ public class App {
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
-		TransferModel transfer = new TransferModel();
-		Scanner scanner = new Scanner(System.in);
+		console.displayUsers(accountService.getUsers(), currentUser);
+		System.out.println();
 
-		transfer.setTransfer_status_id(1L);
-		transfer.setTransfer_type_id(1L);
+		while (true) {
+			TransferModel transfer = collectTransferInformation();
+			if (transfer == null) return;
 
-		console.displayUsers(accountService.getUsers());
-
-		String userToSendTo = console.getUserInput("Enter User ID to send to");
-
-		try {
-			transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
-			transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
-			if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
-				System.out.println("Cannot send money to self");
-				return;
-			}
-		} catch (Exception e) {
-			System.out.println("Please enter valid ID");
-			return;
+			if (transferService.sendBucks(transfer)) {
+				System.out.println("Success \n");
+				break;
+			} else System.out.println("Failed \n");
 		}
 
-		String amount = console.getUserInput("Enter amount to send");
-
-		try {
-			BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
-			transfer.setAmount(amountToSend);
-		} catch (Exception e) {
-			System.out.println("Please enter in the format of 10.00 for example");
-			return;
-		}
-
-		if (transferService.sendBucks(transfer)) {
-			System.out.println("Success");
-		} else System.out.println("Failed");
 	}
-
-
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
@@ -222,5 +195,58 @@ public class App {
 		String username = console.getUserInput("Username");
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
+	}
+
+
+	// helper method for sendBucks()
+	private TransferModel collectTransferInformation() {
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		TransferModel transfer = new TransferModel();
+
+		transfer.setTransfer_status_id(1L);
+		transfer.setTransfer_type_id(1L);
+
+
+
+		while (true) {
+			String userToSendTo = console.getUserInput("Enter User ID to send to (Enter X to quit screen)");
+			System.out.println();
+			try {
+
+				// give the user the option to leave this menu if they don't want to send money
+				if (userToSendTo.equals("X")) return null;
+
+				transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+				transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
+				if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
+					System.out.println("Cannot send money to self \n");
+					continue;
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter valid ID \n");
+				continue;
+			}
+		}
+
+		while (true) {
+			String amount = console.getUserInput("Enter amount to send");
+			System.out.println();
+
+			try {
+				BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
+				transfer.setAmount(amountToSend);
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter a money amount (ex. 10.00)\n");
+
+				continue;
+			}
+		}
+
+
+		return transfer;
+
 	}
 }
