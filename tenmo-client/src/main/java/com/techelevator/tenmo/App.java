@@ -110,7 +110,23 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		// account ids and usernames
+		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
+
+		TransferModel[] transfers;
+
+		try {
+			transfers = transferService.listPendingTransfers();
+			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
+			console.displayPendingTransfers(transfers, usernames, user_account_id);
+		} catch (RestClientException re) {
+			System.out.println("Issue with the Rest API");
+		} catch (Exception e) {
+			System.out.println("Issue with transfer history in App class");
+		}
 		
 	}
 
