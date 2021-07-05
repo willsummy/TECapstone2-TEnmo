@@ -50,6 +50,12 @@ public class TransferController {
         return transferDao.createTransfer(transfer, 2); // 2 representing sent transfer
     }
 
+    // need route for requesting transfer
+    @RequestMapping(path = "transfer/request", method = RequestMethod.POST)
+    public boolean requestTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
+        return transferDao.createTransfer(transfer, 1); // 1 representing request transfer
+    }
+
     }
 
 }
