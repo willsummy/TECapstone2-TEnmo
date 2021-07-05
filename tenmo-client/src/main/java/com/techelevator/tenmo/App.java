@@ -138,7 +138,7 @@ public class App {
 		System.out.println();
 
 		while (true) {
-			TransferModel transfer = collectTransferInformation();
+			TransferModel transfer = collectSendTransferInformation();
 			if (transfer == null) return;
 
 			if (transferService.sendBucks(transfer)) {
