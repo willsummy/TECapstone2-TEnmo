@@ -279,6 +279,53 @@ public class App {
 
 	}
 
+	private TransferModel collectRequestTransferInformation() {
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		TransferModel transfer = new TransferModel();
+
+		transfer.setTransfer_status_id(1L); // 1 represents pending status
+		transfer.setTransfer_type_id(1L); // 1 represents request type
+
+
+
+		while (true) {
+			String otherUser = console.getUserInput("Enter User ID to request from (Enter X to quit screen)");
+			System.out.println();
+			try {
+
+				// give the user the option to leave this menu if they don't want to send money
+				if (otherUser.equals("X")) return null;
+
+				transfer.setAccount_to(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+				transfer.setAccount_from(accountService.getAccountIdFromUserId(Long.parseLong(otherUser)));
+				if (otherUser.equals(currentUser.getUser().getId().toString())) {
+					System.out.println("Cannot request money from self \n");
+					continue;
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter valid ID \n");
+				continue;
+			}
+		}
+
+		while (true) {
+			String amount = console.getUserInput("Enter amount to request");
+			System.out.println();
+
+			try {
+				BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
+				transfer.setAmount(amountToSend);
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter a money amount (ex. 10.00)\n");
+
+				continue;
+			}
+		}
+
+
 		return transfer;
 
 	}
