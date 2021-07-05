@@ -47,7 +47,9 @@ public class TransferController {
 
     @RequestMapping(path = "/transfer/send", method = RequestMethod.POST)
     public boolean sendTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
-        return transferDao.createTransfer(transfer);
+        return transferDao.createTransfer(transfer, 2); // 2 representing sent transfer
+    }
+
     }
 
 }
