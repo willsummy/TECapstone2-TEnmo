@@ -31,7 +31,12 @@ public class TransferController {
     public List<Transfer> listTransfersByUserId(Principal principal){
         Long user_id = userDao.findIdByUsername(principal.getName());
         return transferDao.listAllTransfersByUserId(user_id);
+    }
 
+    @RequestMapping(path = "/pending/list", method = RequestMethod.GET)
+    public List<Transfer> listPendingTransfersByUserId(Principal principal) {
+        Long user_id = userDao.findIdByUsername(principal.getName());
+        return transferDao.listPendingTransfersByUserId(user_id);
     }
 
     @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
