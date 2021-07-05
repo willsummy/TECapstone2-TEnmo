@@ -56,6 +56,11 @@ public class TransferController {
         return transferDao.createTransfer(transfer, 1); // 1 representing request transfer
     }
 
+    @RequestMapping(path = "transfer/accept", method = RequestMethod.PUT) // editing a transfer to accepted
+    public boolean acceptTransfer(@Valid @RequestBody Transfer transfer) {
+        return false;
+    }
+
     }
 
 }
