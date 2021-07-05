@@ -114,6 +114,12 @@ public class ConsoleService {
 		System.out.println("-------------------------------------------");
 		
 		for (TransferModel transfer : transfers) {
+
+			// don't display pending transfers
+			if (transfer.getTransfer_status_id() == 1) { // 1 representing pending
+				continue;
+			}
+
 			Long transferId = transfer.getTransfer_id();
 			Long senderId = transfer.getAccount_from(); // account id
 			Long receiverId = transfer.getAccount_to(); // account id
