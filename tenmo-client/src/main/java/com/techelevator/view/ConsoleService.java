@@ -86,8 +86,6 @@ public class ConsoleService {
 		System.out.println("Your current account balance is : " + printBalance);
 	}
 
-
-
 	public void displayUsers(User[] users, AuthenticatedUser currentUser) {
 		System.out.println("-------------------------------------------");
 		System.out.println("Users");
@@ -117,8 +115,8 @@ public class ConsoleService {
 		
 		for (TransferModel transfer : transfers) {
 			Long transferId = transfer.getTransfer_id();
-			Long senderId = transfer.getAccount_from();
-			Long receiverId = transfer.getAccount_to();
+			Long senderId = transfer.getAccount_from(); // account id
+			Long receiverId = transfer.getAccount_to(); // account id
 			String senderName = usernames.get(senderId.toString());
 			String receiverName = usernames.get(receiverId.toString());
 
