@@ -30,7 +30,12 @@ public class TransferService {
     }
 
     // send transfer method, http get method to API
+    public TransferModel[] listTransfers() {
         return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+    }
+
+    public TransferModel[] listPendingTransfers() {
+        return restTemplate.exchange(API_BASE_URL + "pending/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
     }
 
 
