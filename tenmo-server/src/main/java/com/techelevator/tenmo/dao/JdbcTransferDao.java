@@ -105,6 +105,15 @@ public class JdbcTransferDao implements TransferDao{
 
 
 
+    }
+
+    @Override
+    public boolean acceptTransfer(Transfer transfer) {
+        return false;
+    }
+
+    @Override
+    public void rejectTransfer(Transfer transfer) {
 
     }
 
