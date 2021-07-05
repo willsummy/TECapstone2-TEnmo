@@ -150,8 +150,21 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
+		console.displayUsers(accountService.getUsers(), currentUser);
+		System.out.println();
+
+		while (true) {
+			TransferModel transfer = collectRequestTransferInformation();
+			if (transfer == null) return;
+
+			if (transferService.requestBucks(transfer)) {
+				System.out.println("Success \n");
+				break;
+			} else System.out.println("Failed \n");
+		}
 	}
 	
 	private void exitProgram() {
