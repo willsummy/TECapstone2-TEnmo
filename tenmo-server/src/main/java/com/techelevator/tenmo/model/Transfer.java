@@ -1,15 +1,21 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class Transfer {
     // many transfers for every account
 
     private Long transfer_id; // primary key
+    @NotNull(message = "Type ID is mandatory")
     private Long transfer_type_id; // foreign key
+    @NotNull(message = "Status ID is mandatory")
     private Long transfer_status_id; // foreign key
+    @NotNull(message = "Sender ID is mandatory")
     private Long account_from; // account_id fk
+    @NotNull(message = "Receiver ID is mandatory")
     private Long account_to; // account_id fk
+    @NotNull(message = "Amount is mandatory")
     private BigDecimal amount;
 
     public Transfer() {}
