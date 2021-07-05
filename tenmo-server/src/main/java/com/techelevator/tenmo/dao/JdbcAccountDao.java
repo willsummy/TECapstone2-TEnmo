@@ -59,36 +59,38 @@ public class JdbcAccountDao implements AccountDao {
             if(results.next()) {
                 balance = results.getBigDecimal("balance");
             }
-            System.out.println("Cannot access data");
+            else {
+                System.out.println("Cannot access data");
+            }
         return balance;
     }
 
-    @Override
-    public BigDecimal addToBalance(BigDecimal amount, Long user_id) throws AccountNotFoundException {
-       Account account = findAccountById(user_id);
-       BigDecimal updatedBalance = account.getBalance().add(amount); // if BigDecimal cannot be into JSON, switch to double or long.
-        System.out.println(updatedBalance);
-        String sqlString = "UPDATE accounts SET balance = ? WHERE user_id = ?";
-        try {
-            jdbcTemplate.update(sqlString, updatedBalance, user_id);
-        } catch (DataAccessException e) {
-            System.out.println("Cannot access data");
-        }
-        return account.getBalance();
-    }
-
-    @Override
-    public BigDecimal subtractFromBalance(BigDecimal amount, Long user_id) throws AccountNotFoundException {
-        Account account = findAccountById(user_id);
-        BigDecimal updatedBalance = account.getBalance().subtract(amount);
-        String sqlString = "UPDATE accounts SET balance = ? WHERE user_id = ?";
-        try {
-            jdbcTemplate.update(sqlString, updatedBalance, user_id);
-        } catch (DataAccessException e) {
-            System.out.println("Cannot access data");
-        }
-        return account.getBalance();
-    }
+//    @Override
+//    public BigDecimal addToBalance(BigDecimal amount, Long user_id) throws AccountNotFoundException {
+//       Account account = findAccountById(user_id);
+//       BigDecimal updatedBalance = account.getBalance().add(amount); // if BigDecimal cannot be into JSON, switch to double or long.
+//        System.out.println(updatedBalance);
+//        String sqlString = "UPDATE accounts SET balance = ? WHERE user_id = ?";
+//        try {
+//            jdbcTemplate.update(sqlString, updatedBalance, user_id);
+//        } catch (DataAccessException e) {
+//            System.out.println("Cannot access data");
+//        }
+//        return account.getBalance();
+//    }
+//
+//    @Override
+//    public BigDecimal subtractFromBalance(BigDecimal amount, Long user_id) throws AccountNotFoundException {
+//        Account account = findAccountById(user_id);
+//        BigDecimal updatedBalance = account.getBalance().subtract(amount);
+//        String sqlString = "UPDATE accounts SET balance = ? WHERE user_id = ?";
+//        try {
+//            jdbcTemplate.update(sqlString, updatedBalance, user_id);
+//        } catch (DataAccessException e) {
+//            System.out.println("Cannot access data");
+//        }
+//        return account.getBalance();
+//    }
 
     @Override
     public boolean transferFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
@@ -112,8 +114,8 @@ public class JdbcAccountDao implements AccountDao {
 
         jdbcTemplate.update(sql, newSenderBalance, sender_account_id, newReceiverBalance, receiver_account_id);
 
-        if (findAccountById(sender_account_id).getBalance().compareTo(oldSenderBalance) == 0
-        && findAccountById(receiver_account_id).getBalance().compareTo(oldReceiverBalance) == 0
+        if (findAccountById(sender_account_id).getBalance().compareTo(oldSenderBalance) == 0 //if both accounts haven't changed
+        && findAccountById(receiver_account_id).getBalance().compareTo(oldReceiverBalance) == 0 //transfer didn't happen
         ) {
             return false;
         }
