@@ -10,8 +10,14 @@ public interface TransferDao {
 
     List<Transfer> listAllTransfersByUserId(Long userId);
 
+    List<Transfer> listPendingTransfersByUserId(Long userId);
+
     Transfer getTransferDetailsByTransferId(Long transferId);
 
-    boolean createTransfer(Transfer transfer) throws AccountNotFoundException;
+    boolean createTransfer(Transfer transfer, int type) throws AccountNotFoundException;
+
+    boolean acceptTransfer(Transfer transfer);
+
+    void rejectTransfer(Transfer transfer);
 
 }
