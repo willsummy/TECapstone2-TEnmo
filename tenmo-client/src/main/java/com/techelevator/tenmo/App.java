@@ -275,7 +275,7 @@ public class App {
 			try {
 
 				// give the user the option to leave this menu if they don't want to send money
-				if (userToSendTo.equals("X")) return null;
+				if (userToSendTo.equalsIgnoreCase("X")) return null;
 
 				transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
 				transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
@@ -305,7 +305,6 @@ public class App {
 			}
 		}
 
-
 		return transfer;
 
 	}
@@ -326,7 +325,7 @@ public class App {
 			try {
 
 				// give the user the option to leave this menu if they don't want to send money
-				if (otherUser.equals("X")) return null;
+				if (otherUser.equalsIgnoreCase("X")) return null;
 
 				transfer.setAccount_to(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
 				transfer.setAccount_from(accountService.getAccountIdFromUserId(Long.parseLong(otherUser)));
