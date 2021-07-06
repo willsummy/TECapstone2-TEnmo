@@ -57,6 +57,11 @@ TransferController:
 __________________________________
 
 
+Optional stuff
+
+1st, set up pending/accepting sent money
+2nd, set up requesting money
+
 
 
 
