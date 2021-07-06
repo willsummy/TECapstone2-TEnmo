@@ -40,8 +40,8 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
-    public Transfer getTransfer(@PathVariable Long id) {
-        return transferDao.getTransferDetailsByTransferId(id);
+    public Transfer getTransfer(@PathVariable Long id, Principal principal) {
+        return transferDao.getTransferDetailsByTransferId(id, principal.getName());
     }
 
 
