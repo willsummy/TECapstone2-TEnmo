@@ -64,11 +64,13 @@ public class JdbcTransferDao implements TransferDao{
 
         Transfer transfer = null;
 
-        String sql = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
-                "FROM transfers " +
-                "WHERE transfer_id = ?;";
+        String sql = "SELECT DISTINCT t.transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
+                "FROM transfers t " +
+                "JOIN accounts a ON account_from = a.account_id OR account_to = a.account_id " +
+                "JOIN users u ON u.user_id = a.user_id " +
+                "WHERE transfer_id = ? AND u.username = ?;";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId, username);
 
         if (results.next()) {
             transfer = mapRowToTransfer(results);
