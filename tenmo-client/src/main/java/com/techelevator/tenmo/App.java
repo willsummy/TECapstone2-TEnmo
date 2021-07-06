@@ -149,15 +149,93 @@ public class App {
 
 		TransferModel[] transfers;
 
+		Long user_account_id = null;
+
 		try {
 			transfers = transferService.listPendingTransfers();
-			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
+			user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
 			console.displayPendingTransfers(transfers, usernames, user_account_id);
+			System.out.println();
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
 		} catch (Exception e) {
 			System.out.println("Issue with transfer history in App class");
 		}
+
+		// prompt user if they want to see transfer details
+		while (true) {
+
+			String userInput = console.getUserInput("Enter ID of transfer for details, and to accept/reject. \n" +
+					"Enter X to return to menu");
+
+			if (userInput.equalsIgnoreCase("X")) return;
+
+			Long transfer_id;
+
+			try {
+				transfer_id = Long.parseLong(userInput);
+			} catch (NumberFormatException ne) {
+				System.out.println("Please enter valid ID.");
+				continue;
+			} catch (Exception e) {
+				System.out.println("An error occured");
+				continue;
+			}
+
+			TransferModel transfer = transferService.getTransferDetails(transfer_id);
+
+			if (transfer == null) {
+				System.out.println("Please enter valid ID");
+				continue;
+			}
+
+			console.transferDetails(transfer, usernames);
+
+			// give user option to approve transfer if transfer is to them
+			// if the account_from matches user account_id, they can approve
+
+			if (transfer.getAccount_from().equals(user_account_id)) {
+
+				while (true) {
+					String userChoice = console.getUserInput("Would you like to (a)pprove, (r)eject this request, or e(x)it?");
+
+					if (userChoice.equalsIgnoreCase("X")) return;
+
+					else if (userChoice.equalsIgnoreCase("A")) {
+						if (transferService.approveRequest(transfer)) {
+							System.out.println("Approved");
+							return;
+						} else {
+							System.out.println("You don't have the appropriate funds.");
+							return;
+						}
+					}
+
+					else if (userChoice.equalsIgnoreCase("R")) {
+						if (transferService.rejectRequest(transfer)) {
+							System.out.println("Rejected");
+							return;
+						} else {
+							System.out.println("An error occured");
+							return;
+						}
+
+					}
+
+					else {
+						System.out.println("Please enter a, r, or x");
+						System.out.println();
+						continue;
+					}
+
+				}
+
+			}
+
+
+		}
+
+
 		
 	}
 
