@@ -116,7 +116,7 @@ public class ConsoleService {
 		for (TransferModel transfer : transfers) {
 
 			// don't display pending transfers
-			if (transfer.getTransfer_status_id() == 1) { // 1 representing pending
+			if (transfer.getTransfer_status_id() == 1 || transfer.getTransfer_status_id() == 3) { // 1 representing pending
 				continue;
 			}
 
