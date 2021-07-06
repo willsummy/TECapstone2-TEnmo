@@ -110,8 +110,21 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public boolean acceptTransfer(Transfer transfer) {
-        return false;
+    public boolean acceptTransfer(Transfer transfer) throws AccountNotFoundException {
+        // attempt to update funds in account balances
+
+        if (accountDao.sendFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
+
+            String sql = "UPDATE transfers " +
+                    "SET transfer_status_id = 2 " +
+                    "WHERE transfer_id = ?;";
+
+            jdbcTemplate.update(sql, transfer.getTransfer_id());
+            return true;
+
+        } else return false;
+
+        // if that is successful, update the transfer data and return true
     }
 
     @Override
