@@ -60,7 +60,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public Transfer getTransferDetailsByTransferId(Long transferId) {
+    public Transfer getTransferDetailsByTransferId(Long transferId, String username) {
 
         Transfer transfer = null;
 
