@@ -63,7 +63,7 @@ public class TransferController {
 
     @RequestMapping(path = "transfer/reject", method = RequestMethod.PUT) // editing a transfer to rejected
     public boolean rejectTransfer(@Valid @RequestBody Transfer transfer) {
-        return false;
+        return transferDao.rejectTransfer(transfer);
     }
 
 }
