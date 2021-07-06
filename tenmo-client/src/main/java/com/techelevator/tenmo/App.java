@@ -102,10 +102,41 @@ public class App {
 			transfers = transferService.listTransfers();
 			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
 			console.displayTransfers(transfers, usernames, user_account_id);
+			System.out.println();
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
 		} catch (Exception e) {
 			System.out.println("Issue with transfer history in App class");
+		}
+
+		// prompt user if they want to see transfer details
+		while (true) {
+
+			String userInput = console.getUserInput("Enter ID of transfer for details (X to return to menu)");
+
+			if (userInput.equalsIgnoreCase("X")) return;
+
+			Long transfer_id;
+
+			try {
+				transfer_id = Long.parseLong(userInput);
+			} catch (NumberFormatException ne) {
+				System.out.println("Please enter valid ID.");
+				continue;
+			} catch (Exception e) {
+				System.out.println("An error occured");
+				continue;
+			}
+
+			TransferModel transfer = transferService.getTransferDetails(transfer_id);
+
+			if (transfer == null) {
+				System.out.println("Please enter valid ID");
+				continue;
+			}
+
+			console.transferDetails(transfer, usernames);
+
 		}
 	}
 
