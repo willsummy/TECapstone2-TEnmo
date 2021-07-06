@@ -46,6 +46,10 @@ public class TransferService {
         return restTemplate.exchange(API_BASE_URL + "pending/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
     }
 
+    public TransferModel getTransferDetails(Long transfer_id) {
+        return restTemplate.exchange(API_BASE_URL + "transfers/" + transfer_id, HttpMethod.GET, makeAuthEntity(), TransferModel.class).getBody();
+    }
+
 
     private HttpEntity<TransferModel> makeTransferEntity(TransferModel transferModel) {
         HttpHeaders headers = new HttpHeaders();
