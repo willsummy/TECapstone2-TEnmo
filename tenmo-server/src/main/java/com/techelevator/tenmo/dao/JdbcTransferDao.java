@@ -128,8 +128,13 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public void rejectTransfer(Transfer transfer) {
+    public boolean rejectTransfer(Transfer transfer) {
+        String sql = "UPDATE transfers " +
+                "SET transfer_status_id = 3 " +
+                "WHERE transfer_id = ?;";
 
+        jdbcTemplate.update(sql, transfer.getTransfer_id());
+        return true;
     }
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet) {
