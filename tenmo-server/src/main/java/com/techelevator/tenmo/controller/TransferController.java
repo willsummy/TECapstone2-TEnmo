@@ -57,8 +57,8 @@ public class TransferController {
     }
 
     @RequestMapping(path = "transfer/accept", method = RequestMethod.PUT) // editing a transfer to accepted
-    public boolean acceptTransfer(@Valid @RequestBody Transfer transfer) {
-        return false;
+    public boolean acceptTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
+        return transferDao.acceptTransfer(transfer);
     }
 
     @RequestMapping(path = "transfer/reject", method = RequestMethod.PUT) // editing a transfer to rejected
