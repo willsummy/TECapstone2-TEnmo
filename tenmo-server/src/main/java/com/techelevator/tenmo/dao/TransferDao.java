@@ -12,12 +12,12 @@ public interface TransferDao {
 
     List<Transfer> listPendingTransfersByUserId(Long userId);
 
-    Transfer getTransferDetailsByTransferId(Long transferId);
+    Transfer getTransferDetailsByTransferId(Long transferId, String username);
 
     boolean createTransfer(Transfer transfer, int type) throws AccountNotFoundException;
 
-    boolean acceptTransfer(Transfer transfer);
+    boolean acceptTransfer(Transfer transfer) throws AccountNotFoundException;
 
-    void rejectTransfer(Transfer transfer);
+    boolean rejectTransfer(Transfer transfer);
 
 }
