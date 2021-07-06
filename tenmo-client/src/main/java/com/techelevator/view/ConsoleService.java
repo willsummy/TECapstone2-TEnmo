@@ -204,17 +204,36 @@ public class ConsoleService {
 		}
 	}
 
-	public void transferDetails(TransferModel[] transfers, Map<Long, String> usernames ) {
-		for (TransferModel transfer : transfers) {
-			Long transferId = transfer.getTransfer_id();
-			String senderName = usernames.get(transfer.getAccount_from());
-			String receiverName = usernames.get(transfer.getAccount_to());
-			Long transferType = transfer.getTransfer_type_id();
-			Long transferStatus = transfer.getTransfer_status_id();
-			BigDecimal amount = transfer.getAmount();
 
-			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "Type: " + transferType + " " + "Status: " + transferStatus + " " + "Amount: " + amount);
-		}
+
+	public void transferDetails(TransferModel transfer, Map<Long, String> usernames ) {
+
+		Long transferId = transfer.getTransfer_id();
+		String senderName = usernames.get(transfer.getAccount_from().toString()); // not sure why these needs to be a string
+		String receiverName = usernames.get(transfer.getAccount_to().toString());
+		String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount()); // formats with $ and two point digits
+
+		// Transfer type and status need to be strings, based on id\
+		String transferType;
+		String transferStatus;
+
+		if (transfer.getTransfer_type_id() == 1L) transferType = "Request";
+		else if (transfer.getTransfer_type_id() == 2L) transferType = "Send";
+		else transferType = "Error";
+
+		if (transfer.getTransfer_status_id() == 1L) transferStatus = "Pending";
+		else if (transfer.getTransfer_status_id() == 2L) transferStatus = "Approved";
+		else if (transfer.getTransfer_status_id() == 3L) transferStatus = "Rejected";
+		else transferStatus = "Error";
+
+
+		System.out.println("-------------------------------------------");
+		System.out.println("Transfer Details");
+		System.out.println("-------------------------------------------");
+
+
+		System.out.println("ID: " + transferId + "\nFrom: " + senderName + "\nTo: " + receiverName + "\nType: " + transferType + "\nStatus: " + transferStatus + "\nAmount: " + amount);
+
 	}
 
 }
