@@ -31,18 +31,39 @@ public class TransferController {
     public List<Transfer> listTransfersByUserId(Principal principal){
         Long user_id = userDao.findIdByUsername(principal.getName());
         return transferDao.listAllTransfersByUserId(user_id);
+    }
 
+    @RequestMapping(path = "/pending/list", method = RequestMethod.GET)
+    public List<Transfer> listPendingTransfersByUserId(Principal principal) {
+        Long user_id = userDao.findIdByUsername(principal.getName());
+        return transferDao.listPendingTransfersByUserId(user_id);
     }
 
     @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
-    public Transfer getTransfer(@PathVariable Long id) {
-        return transferDao.getTransferDetailsByTransferId(id);
+    public Transfer getTransfer(@PathVariable Long id, Principal principal) {
+        return transferDao.getTransferDetailsByTransferId(id, principal.getName());
     }
 
 
-    @RequestMapping(path = "/transfer", method = RequestMethod.POST)
+    @RequestMapping(path = "/transfer/send", method = RequestMethod.POST)
     public boolean sendTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
-        return transferDao.createTransfer(transfer);
+        return transferDao.createTransfer(transfer, 2); // 2 representing sent transfer
+    }
+
+    // need route for requesting transfer
+    @RequestMapping(path = "transfer/request", method = RequestMethod.POST)
+    public boolean requestTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
+        return transferDao.createTransfer(transfer, 1); // 1 representing request transfer
+    }
+
+    @RequestMapping(path = "transfer/accept", method = RequestMethod.PUT) // editing a transfer to accepted
+    public boolean acceptTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
+        return transferDao.acceptTransfer(transfer);
+    }
+
+    @RequestMapping(path = "transfer/reject", method = RequestMethod.PUT) // editing a transfer to rejected
+    public boolean rejectTransfer(@Valid @RequestBody Transfer transfer) {
+        return transferDao.rejectTransfer(transfer);
     }
 
 }

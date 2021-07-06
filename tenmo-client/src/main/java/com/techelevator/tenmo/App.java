@@ -93,6 +93,7 @@ public class App {
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
+		// account ids and usernames
 		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
 
 		TransferModel[] transfers;
@@ -101,15 +102,140 @@ public class App {
 			transfers = transferService.listTransfers();
 			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
 			console.displayTransfers(transfers, usernames, user_account_id);
+			System.out.println();
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
 		} catch (Exception e) {
 			System.out.println("Issue with transfer history in App class");
 		}
+
+		// prompt user if they want to see transfer details
+		while (true) {
+
+			String userInput = console.getUserInput("Enter ID of transfer for details (X to return to menu)");
+
+			if (userInput.equalsIgnoreCase("X")) return;
+
+			Long transfer_id;
+
+			try {
+				transfer_id = Long.parseLong(userInput);
+			} catch (NumberFormatException ne) {
+				System.out.println("Please enter valid ID.");
+				continue;
+			} catch (Exception e) {
+				System.out.println("An error occured");
+				continue;
+			}
+
+			TransferModel transfer = transferService.getTransferDetails(transfer_id);
+
+			if (transfer == null) {
+				System.out.println("Please enter valid ID");
+				continue;
+			}
+
+			console.transferDetails(transfer, usernames);
+
+		}
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		// account ids and usernames
+		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
+
+		TransferModel[] transfers;
+
+		Long user_account_id = null;
+
+		try {
+			transfers = transferService.listPendingTransfers();
+			user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
+			console.displayPendingTransfers(transfers, usernames, user_account_id);
+			System.out.println();
+		} catch (RestClientException re) {
+			System.out.println("Issue with the Rest API");
+		} catch (Exception e) {
+			System.out.println("Issue with transfer history in App class");
+		}
+
+		// prompt user if they want to see transfer details
+		while (true) {
+
+			String userInput = console.getUserInput("Enter ID of transfer for details, and to accept/reject. \n" +
+					"Enter X to return to menu");
+
+			if (userInput.equalsIgnoreCase("X")) return;
+
+			Long transfer_id;
+
+			try {
+				transfer_id = Long.parseLong(userInput);
+			} catch (NumberFormatException ne) {
+				System.out.println("Please enter valid ID.");
+				continue;
+			} catch (Exception e) {
+				System.out.println("An error occured");
+				continue;
+			}
+
+			TransferModel transfer = transferService.getTransferDetails(transfer_id);
+
+			if (transfer == null) {
+				System.out.println("Please enter valid ID");
+				continue;
+			}
+
+			console.transferDetails(transfer, usernames);
+
+			// give user option to approve transfer if transfer is to them
+			// if the account_from matches user account_id, they can approve
+
+			if (transfer.getAccount_from().equals(user_account_id)) {
+
+				while (true) {
+					String userChoice = console.getUserInput("Would you like to (a)pprove, (r)eject this request, or e(x)it?");
+
+					if (userChoice.equalsIgnoreCase("X")) return;
+
+					else if (userChoice.equalsIgnoreCase("A")) {
+						if (transferService.approveRequest(transfer)) {
+							System.out.println("Approved");
+							return;
+						} else {
+							System.out.println("You don't have the appropriate funds.");
+							return;
+						}
+					}
+
+					else if (userChoice.equalsIgnoreCase("R")) {
+						if (transferService.rejectRequest(transfer)) {
+							System.out.println("Rejected");
+							return;
+						} else {
+							System.out.println("An error occured");
+							return;
+						}
+
+					}
+
+					else {
+						System.out.println("Please enter a, r, or x");
+						System.out.println();
+						continue;
+					}
+
+				}
+
+			}
+
+
+		}
+
+
 		
 	}
 
@@ -121,7 +247,7 @@ public class App {
 		System.out.println();
 
 		while (true) {
-			TransferModel transfer = collectTransferInformation();
+			TransferModel transfer = collectSendTransferInformation();
 			if (transfer == null) return;
 
 			if (transferService.sendBucks(transfer)) {
@@ -133,8 +259,21 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
+		console.displayUsers(accountService.getUsers(), currentUser);
+		System.out.println();
+
+		while (true) {
+			TransferModel transfer = collectRequestTransferInformation();
+			if (transfer == null) return;
+
+			if (transferService.requestBucks(transfer)) {
+				System.out.println("Success \n");
+				break;
+			} else System.out.println("Failed \n");
+		}
 	}
 	
 	private void exitProgram() {
@@ -197,15 +336,14 @@ public class App {
 		return new UserCredentials(username, password);
 	}
 
-
 	// helper method for sendBucks()
-	private TransferModel collectTransferInformation() {
+	private TransferModel collectSendTransferInformation() {
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
 		TransferModel transfer = new TransferModel();
 
-		transfer.setTransfer_status_id(1L);
-		transfer.setTransfer_type_id(1L);
+		transfer.setTransfer_status_id(2L); // 2 represents approved status
+		transfer.setTransfer_type_id(2L); // 2 represents sent type
 
 
 
@@ -215,7 +353,7 @@ public class App {
 			try {
 
 				// give the user the option to leave this menu if they don't want to send money
-				if (userToSendTo.equals("X")) return null;
+				if (userToSendTo.equalsIgnoreCase("X")) return null;
 
 				transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
 				transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
@@ -232,6 +370,56 @@ public class App {
 
 		while (true) {
 			String amount = console.getUserInput("Enter amount to send");
+			System.out.println();
+
+			try {
+				BigDecimal amountToSend = BigDecimal.valueOf(Double.parseDouble(amount));
+				transfer.setAmount(amountToSend);
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter a money amount (ex. 10.00)\n");
+
+				continue;
+			}
+		}
+
+		return transfer;
+
+	}
+
+	private TransferModel collectRequestTransferInformation() {
+		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+
+		TransferModel transfer = new TransferModel();
+
+		transfer.setTransfer_status_id(1L); // 1 represents pending status
+		transfer.setTransfer_type_id(1L); // 1 represents request type
+
+
+
+		while (true) {
+			String otherUser = console.getUserInput("Enter User ID to request from (Enter X to quit screen)");
+			System.out.println();
+			try {
+
+				// give the user the option to leave this menu if they don't want to send money
+				if (otherUser.equalsIgnoreCase("X")) return null;
+
+				transfer.setAccount_to(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+				transfer.setAccount_from(accountService.getAccountIdFromUserId(Long.parseLong(otherUser)));
+				if (otherUser.equals(currentUser.getUser().getId().toString())) {
+					System.out.println("Cannot request money from self \n");
+					continue;
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter valid ID \n");
+				continue;
+			}
+		}
+
+		while (true) {
+			String amount = console.getUserInput("Enter amount to request");
 			System.out.println();
 
 			try {

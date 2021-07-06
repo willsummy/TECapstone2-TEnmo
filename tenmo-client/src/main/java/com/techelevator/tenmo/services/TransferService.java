@@ -22,11 +22,33 @@ public class TransferService {
     }
 
     public boolean sendBucks(TransferModel transfer) {
-
-        return restTemplate.exchange(API_BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
+        return restTemplate.exchange(API_BASE_URL + "transfer/send", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
     }
 
+    public boolean requestBucks(TransferModel transfer) {
+        return restTemplate.exchange(API_BASE_URL + "transfer/request", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
+    }
 
+    public boolean approveRequest(TransferModel transfer) {
+        return restTemplate.exchange(API_BASE_URL + "transfer/accept", HttpMethod.PUT, makeTransferEntity(transfer), Boolean.class).getBody();
+    }
+
+    public boolean rejectRequest(TransferModel transfer) {
+        return restTemplate.exchange(API_BASE_URL + "transfer/reject", HttpMethod.PUT, makeTransferEntity(transfer), Boolean.class).getBody();
+    }
+
+    // send transfer method, http get method to API
+    public TransferModel[] listTransfers() {
+        return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+    }
+
+    public TransferModel[] listPendingTransfers() {
+        return restTemplate.exchange(API_BASE_URL + "pending/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+    }
+
+    public TransferModel getTransferDetails(Long transfer_id) {
+        return restTemplate.exchange(API_BASE_URL + "transfers/" + transfer_id, HttpMethod.GET, makeAuthEntity(), TransferModel.class).getBody();
+    }
 
 
     private HttpEntity<TransferModel> makeTransferEntity(TransferModel transferModel) {
@@ -38,20 +60,14 @@ public class TransferService {
     }
 
 
-    // send transfer method, http get method to API
-    public TransferModel[] listTransfers() throws RestClientException {
-        return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
+
+    private HttpEntity makeAuthEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        HttpEntity entity = new HttpEntity<>(headers);
+        return entity;
     }
-
-
-
-        private HttpEntity makeAuthEntity() {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(authenticatedUser.getToken());
-            HttpEntity entity = new HttpEntity<>(headers);
-            return entity;
-        }
-    }
+}
 
 
 

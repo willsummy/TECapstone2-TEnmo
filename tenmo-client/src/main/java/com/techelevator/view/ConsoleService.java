@@ -86,8 +86,6 @@ public class ConsoleService {
 		System.out.println("Your current account balance is : " + printBalance);
 	}
 
-
-
 	public void displayUsers(User[] users, AuthenticatedUser currentUser) {
 		System.out.println("-------------------------------------------");
 		System.out.println("Users");
@@ -116,9 +114,15 @@ public class ConsoleService {
 		System.out.println("-------------------------------------------");
 		
 		for (TransferModel transfer : transfers) {
+
+			// don't display pending transfers
+			if (transfer.getTransfer_status_id() == 1 || transfer.getTransfer_status_id() == 3) { // 1 representing pending
+				continue;
+			}
+
 			Long transferId = transfer.getTransfer_id();
-			Long senderId = transfer.getAccount_from();
-			Long receiverId = transfer.getAccount_to();
+			Long senderId = transfer.getAccount_from(); // account id
+			Long receiverId = transfer.getAccount_to(); // account id
 			String senderName = usernames.get(senderId.toString());
 			String receiverName = usernames.get(receiverId.toString());
 
@@ -152,17 +156,84 @@ public class ConsoleService {
 
 	}
 
-	public void transferDetails(TransferModel[] transfers, Map<Long, String> usernames ) {
-		for (TransferModel transfer : transfers) {
-			Long transferId = transfer.getTransfer_id();
-			String senderName = usernames.get(transfer.getAccount_from());
-			String receiverName = usernames.get(transfer.getAccount_to());
-			Long transferType = transfer.getTransfer_type_id();
-			Long transferStatus = transfer.getTransfer_status_id();
-			BigDecimal amount = transfer.getAmount();
+	public void displayPendingTransfers(TransferModel[] transfers, Map<Long, String> usernames, Long user_account_id) {
+		//get account from ID
+		//get account to ID
+		//get amount
+		//get transfer ID
 
-			System.out.println("ID: " + transferId + " " + "From: " + senderName + " " + "To: " + receiverName + " " + "Type: " + transferType + " " + "Status: " + transferStatus + " " + "Amount: " + amount);
+		System.out.println("-------------------------------------------");
+		System.out.println("Transfers");
+		System.out.printf("%-10s", "ID");
+		System.out.printf("%-15s", "From/To");
+		System.out.println("Amount");
+		System.out.println("-------------------------------------------");
+
+		for (TransferModel transfer : transfers) {
+
+			Long transferId = transfer.getTransfer_id();
+			Long senderId = transfer.getAccount_from(); // account id
+			Long receiverId = transfer.getAccount_to(); // account id
+			String senderName = usernames.get(senderId.toString());
+			String receiverName = usernames.get(receiverId.toString());
+
+			String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount());
+			//BigDecimal amount = transfer.getAmount();
+
+			// check if user is sender or receiver
+			// print only the other user involved
+
+			/*
+			formatting the print
+			%-12s specifies left alignment and padding
+			%n specifies newline
+			 */
+			if (transfer.getAccount_from().equals(user_account_id)) {
+				System.out.printf("%-10s", transferId);
+				System.out.printf("%-15s", "To: " + receiverName);
+				System.out.printf("%-15s%n", amount);
+			} else if (transfer.getAccount_to().equals(user_account_id)) {
+				System.out.printf("%-10s", transferId);
+				System.out.printf("%-15s", "From: " + senderName);
+				System.out.printf("%-15s%n", amount);
+			} else System.out.println("Issue in ConsoleService displayTransfers method.");
+
+
+
+
 		}
+	}
+
+
+
+	public void transferDetails(TransferModel transfer, Map<Long, String> usernames ) {
+
+		Long transferId = transfer.getTransfer_id();
+		String senderName = usernames.get(transfer.getAccount_from().toString()); // not sure why these needs to be a string
+		String receiverName = usernames.get(transfer.getAccount_to().toString());
+		String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount()); // formats with $ and two point digits
+
+		// Transfer type and status need to be strings, based on id\
+		String transferType;
+		String transferStatus;
+
+		if (transfer.getTransfer_type_id() == 1L) transferType = "Request";
+		else if (transfer.getTransfer_type_id() == 2L) transferType = "Send";
+		else transferType = "Error";
+
+		if (transfer.getTransfer_status_id() == 1L) transferStatus = "Pending";
+		else if (transfer.getTransfer_status_id() == 2L) transferStatus = "Approved";
+		else if (transfer.getTransfer_status_id() == 3L) transferStatus = "Rejected";
+		else transferStatus = "Error";
+
+
+		System.out.println("-------------------------------------------");
+		System.out.println("Transfer Details");
+		System.out.println("-------------------------------------------");
+
+
+		System.out.println("ID: " + transferId + "\nFrom: " + senderName + "\nTo: " + receiverName + "\nType: " + transferType + "\nStatus: " + transferStatus + "\nAmount: " + amount);
+
 	}
 
 }

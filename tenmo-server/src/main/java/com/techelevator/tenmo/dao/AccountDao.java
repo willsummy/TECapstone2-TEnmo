@@ -14,11 +14,11 @@ public interface AccountDao {
 
     BigDecimal getBalance(Long account_id);
 
-    BigDecimal addToBalance(BigDecimal amount, Long userId) throws AccountNotFoundException;
+  //  BigDecimal addToBalance(BigDecimal amount, Long userId) throws AccountNotFoundException;
 
-    BigDecimal subtractFromBalance(BigDecimal amount, Long userId) throws AccountNotFoundException;
+  //  BigDecimal subtractFromBalance(BigDecimal amount, Long userId) throws AccountNotFoundException;
 
-    boolean transferFunds(BigDecimal amount, Long sender_id, Long receiver_id) throws AccountNotFoundException;
+    boolean sendFunds(BigDecimal amount, Long sender_id, Long receiver_id) throws AccountNotFoundException;
 
     String getUserNameByAccountID(Long account_id);
 
