@@ -29,6 +29,14 @@ public class TransferService {
         return restTemplate.exchange(API_BASE_URL + "transfer/request", HttpMethod.POST, makeTransferEntity(transfer), Boolean.class).getBody();
     }
 
+    public boolean approveRequest(TransferModel transfer) {
+        return restTemplate.exchange(API_BASE_URL + "transfer/accept", HttpMethod.PUT, makeTransferEntity(transfer), Boolean.class).getBody();
+    }
+
+    public boolean rejectRequest(TransferModel transfer) {
+        return restTemplate.exchange(API_BASE_URL + "transfer/reject", HttpMethod.PUT, makeTransferEntity(transfer), Boolean.class).getBody();
+    }
+
     // send transfer method, http get method to API
     public TransferModel[] listTransfers() {
         return restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeAuthEntity(), TransferModel[].class).getBody();
