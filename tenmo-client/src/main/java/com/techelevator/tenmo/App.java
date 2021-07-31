@@ -101,7 +101,7 @@ public class App {
 		try {
 			transfers = transferService.listTransfers();
 			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
-			console.displayTransfers(transfers, usernames, user_account_id);
+			console.displayTransfers(transfers, user_account_id);
 			System.out.println();
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
@@ -194,7 +194,7 @@ public class App {
 			// give user option to approve transfer if transfer is to them
 			// if the account_from matches user account_id, they can approve
 
-			if (transfer.getAccount_from().equals(user_account_id)) {
+			if (transfer.getSender_account().equals(user_account_id)) {
 
 				while (true) {
 					String userChoice = console.getUserInput("Would you like to (a)pprove, (r)eject this request, or e(x)it?");
@@ -355,8 +355,8 @@ public class App {
 				// give the user the option to leave this menu if they don't want to send money
 				if (userToSendTo.equalsIgnoreCase("X")) return null;
 
-				transfer.setAccount_from(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
-				transfer.setAccount_to(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
+				transfer.setSender_account(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+				transfer.setReceiver_account(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
 				if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
 					System.out.println("Cannot send money to self \n");
 					continue;
@@ -405,8 +405,8 @@ public class App {
 				// give the user the option to leave this menu if they don't want to send money
 				if (otherUser.equalsIgnoreCase("X")) return null;
 
-				transfer.setAccount_to(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
-				transfer.setAccount_from(accountService.getAccountIdFromUserId(Long.parseLong(otherUser)));
+				transfer.setReceiver_account(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
+				transfer.setSender_account(accountService.getAccountIdFromUserId(Long.parseLong(otherUser)));
 				if (otherUser.equals(currentUser.getUser().getId().toString())) {
 					System.out.println("Cannot request money from self \n");
 					continue;

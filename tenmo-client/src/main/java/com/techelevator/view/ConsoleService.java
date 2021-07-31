@@ -100,7 +100,7 @@ public class ConsoleService {
 		}
 	}
 
-	public void displayTransfers(TransferModel[] transfers, Map<Long, String> usernames, Long user_account_id) {
+	public void displayTransfers(TransferModel[] transfers, Long user_account_id) {
 		//get account from ID
 		//get account to ID
 		//get amount
@@ -121,10 +121,10 @@ public class ConsoleService {
 			}
 
 			Long transferId = transfer.getTransfer_id();
-			Long senderId = transfer.getAccount_from(); // account id
-			Long receiverId = transfer.getAccount_to(); // account id
-			String senderName = usernames.get(senderId.toString());
-			String receiverName = usernames.get(receiverId.toString());
+			Long senderId = transfer.getSender_account(); // account id
+			Long receiverId = transfer.getReceiver_account(); // account id
+			String senderName = transfer.getSendername();
+			String receiverName = transfer.getReceivername();
 
 			String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount());
 			//BigDecimal amount = transfer.getAmount();
@@ -137,11 +137,11 @@ public class ConsoleService {
 			%-12s specifies left alignment and padding
 			%n specifies newline
 			 */
-			if (transfer.getAccount_from().equals(user_account_id)) {
+			if (transfer.getSender_account().equals(user_account_id)) {
 				System.out.printf("%-10s", transferId);
 				System.out.printf("%-15s", "To: " + receiverName);
 				System.out.printf("%-15s%n", amount);
-			} else if (transfer.getAccount_to().equals(user_account_id)) {
+			} else if (transfer.getSender_account().equals(user_account_id)) {
 				System.out.printf("%-10s", transferId);
 				System.out.printf("%-15s", "From: " + senderName);
 				System.out.printf("%-15s%n", amount);
@@ -172,10 +172,10 @@ public class ConsoleService {
 		for (TransferModel transfer : transfers) {
 
 			Long transferId = transfer.getTransfer_id();
-			Long senderId = transfer.getAccount_from(); // account id
-			Long receiverId = transfer.getAccount_to(); // account id
-			String senderName = usernames.get(senderId.toString());
-			String receiverName = usernames.get(receiverId.toString());
+			Long senderId = transfer.getSender_account(); // account id
+			Long receiverId = transfer.getReceiver_account(); // account id
+			String senderName = transfer.getSendername();
+			String receiverName = transfer.getReceivername();
 
 			String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount());
 			//BigDecimal amount = transfer.getAmount();
@@ -188,11 +188,11 @@ public class ConsoleService {
 			%-12s specifies left alignment and padding
 			%n specifies newline
 			 */
-			if (transfer.getAccount_from().equals(user_account_id)) {
+			if (transfer.getSender_account().equals(user_account_id)) {
 				System.out.printf("%-10s", transferId);
 				System.out.printf("%-15s", "To: " + receiverName);
 				System.out.printf("%-15s%n", amount);
-			} else if (transfer.getAccount_to().equals(user_account_id)) {
+			} else if (transfer.getReceiver_account().equals(user_account_id)) {
 				System.out.printf("%-10s", transferId);
 				System.out.printf("%-15s", "From: " + senderName);
 				System.out.printf("%-15s%n", amount);
@@ -209,8 +209,8 @@ public class ConsoleService {
 	public void transferDetails(TransferModel transfer, Map<Long, String> usernames ) {
 
 		Long transferId = transfer.getTransfer_id();
-		String senderName = usernames.get(transfer.getAccount_from().toString()); // not sure why these needs to be a string
-		String receiverName = usernames.get(transfer.getAccount_to().toString());
+		String senderName = usernames.get(transfer.getSender_account().toString()); // not sure why these needs to be a string
+		String receiverName = usernames.get(transfer.getReceiver_account().toString());
 		String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount()); // formats with $ and two point digits
 
 		// Transfer type and status need to be strings, based on id\
