@@ -41,13 +41,13 @@ public class TransferController {
 
     @RequestMapping(path = "/transfer/send", method = RequestMethod.POST)
     public boolean sendTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
-        return transferDao.createTransfer(transfer, 2); // 2 representing sent transfer
+        return transferDao.createTransfer(transfer); // 2 representing sent transfer
     }
 
     // need route for requesting transfer
     @RequestMapping(path = "transfer/request", method = RequestMethod.POST)
     public boolean requestTransfer(@Valid @RequestBody Transfer transfer) throws AccountNotFoundException {
-        return transferDao.createTransfer(transfer, 1); // 1 representing request transfer
+        return transferDao.createTransfer(transfer); // 1 representing request transfer
     }
 
     @RequestMapping(path = "transfer/accept", method = RequestMethod.PUT) // editing a transfer to accepted
