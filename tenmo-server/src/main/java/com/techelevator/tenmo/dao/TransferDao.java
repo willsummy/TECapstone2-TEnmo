@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface TransferDao {
 
-    List<Transfer> listAllTransfersByUserId(Long userId);
+    List<Transfer> listAllTransfersByUserId(String username);
 
-    List<Transfer> listPendingTransfersByUserId(Long userId);
+    List<Transfer> listPendingTransfersByUserId(String username);
 
     Transfer getTransferDetailsByTransferId(Long transferId, String username);
 

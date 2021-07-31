@@ -24,15 +24,26 @@ public class JdbcTransferDao implements TransferDao{
 
 
     @Override
-    public List<Transfer> listAllTransfersByUserId(Long userId) {
+    public List<Transfer> listAllTransfersByUserId(String username) {
         List<Transfer> list = new ArrayList<>();
 
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM transfers " +
-                "JOIN accounts ON account_from = account_id OR account_to = account_id " +
-                "WHERE user_id = ?;";
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from AS sender_account, account_to AS receiver_account, amount, sender.user_id AS sender_id, receiver.user_id AS receiver_id, sendername, receivername " +
+                "FROM transfers t " +
+                "JOIN (" +
+                "SELECT username AS sendername, accounts.account_id, users.user_id " +
+                "FROM accounts " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id ) sender " +
+                "ON t.account_from = sender.account_id " +
+                "JOIN ( " +
+                "SELECT username AS receivername, accounts.account_id, users.user_id " +
+                "FROM accounts " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id ) receiver " +
+                "ON t.account_to = receiver.account_id " +
+                "WHERE sendername = ? or receivername = ?;";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username, username);
 
         while (results.next()) {
             list.add(mapRowToTransfer(results));
@@ -42,15 +53,27 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public List<Transfer> listPendingTransfersByUserId(Long userId) {
+    public List<Transfer> listPendingTransfersByUserId(String username) {
         List<Transfer> list = new ArrayList<>();
 
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM transfers " +
-                "JOIN accounts ON account_from = account_id OR account_to = account_id " +
-                "WHERE user_id = ? AND transfer_status_id = 1;"; // 1 representing pending
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from AS sender_account, account_to AS receiver_account, amount, sender.user_id AS sender_id, receiver.user_id AS receiver_id, sendername, receivername " +
+                "FROM transfers t " +
+                "JOIN (" +
+                "SELECT username AS sendername, accounts.account_id, users.user_id " +
+                "FROM accounts " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id ) sender " +
+                "ON t.account_from = sender.account_id " +
+                " " +
+                "JOIN ( " +
+                "SELECT username AS receivername, accounts.account_id, users.user_id " +
+                "FROM accounts " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id ) receiver " +
+                "ON t.account_to = receiver.account_id " +
+                "WHERE (sendername = ? or receivername = ?) AND transfer_status_id = 1;"; // 1 representing pending
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
 
         while (results.next()) {
             list.add(mapRowToTransfer(results));
@@ -64,13 +87,24 @@ public class JdbcTransferDao implements TransferDao{
 
         Transfer transfer = null;
 
-        String sql = "SELECT DISTINCT t.transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from AS sender_account, account_to AS receiver_account, amount, sender.user_id AS sender_id, receiver.user_id AS receiver_id, sendername, receivername " +
                 "FROM transfers t " +
-                "JOIN accounts a ON account_from = a.account_id OR account_to = a.account_id " +
-                "JOIN users u ON u.user_id = a.user_id " +
-                "WHERE transfer_id = ? AND u.username = ?;";
+                "JOIN (" +
+                "SELECT username AS sendername, accounts.account_id, users.user_id " +
+                "FROM accounts " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id ) sender " +
+                "ON t.account_from = sender.account_id " +
+                " " +
+                "JOIN ( " +
+                "SELECT username AS receivername, accounts.account_id, users.user_id " +
+                "FROM accounts " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id ) receiver " +
+                "ON t.account_to = receiver.account_id " +
+                "WHERE (sendername = ? OR receivername = ?) AND transfer_id = ?;";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId, username);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql,  username, username, transferId);
 
         if (results.next()) {
             transfer = mapRowToTransfer(results);
@@ -83,12 +117,12 @@ public class JdbcTransferDao implements TransferDao{
     public boolean createTransfer(Transfer transfer, int type) throws AccountNotFoundException {
 
         if (type == 2) { // sending transfer
-            if (accountDao.sendFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
+            if (accountDao.sendFunds(transfer.getAmount(), transfer.getSender_account(), transfer.getReceiver_account())) {
 
                 String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                         "VALUES (?, ?, ?, ?, ?);";
 
-                jdbcTemplate.update(sql, 2, 2, transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
+                jdbcTemplate.update(sql, 2, 2, transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
                 return true;
             } else {
                 return false;
@@ -98,7 +132,7 @@ public class JdbcTransferDao implements TransferDao{
             String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (?, ?, ?, ?, ?);";
 
-            jdbcTemplate.update(sql, 1, 1, transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
+            jdbcTemplate.update(sql, 1, 1, transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
             return true;
             // create a pending request transfer in transfers table, no funds are moved yet
 
@@ -113,7 +147,7 @@ public class JdbcTransferDao implements TransferDao{
     public boolean acceptTransfer(Transfer transfer) throws AccountNotFoundException {
         // attempt to update funds in account balances
 
-        if (accountDao.sendFunds(transfer.getAmount(), transfer.getAccount_from(), transfer.getAccount_to())) {
+        if (accountDao.sendFunds(transfer.getAmount(), transfer.getSender_account(), transfer.getReceiver_account())) {
 
             String sql = "UPDATE transfers " +
                     "SET transfer_status_id = 2 " +
@@ -143,9 +177,13 @@ public class JdbcTransferDao implements TransferDao{
         transfer.setTransfer_id(rowSet.getLong("transfer_id"));
         transfer.setTransfer_status_id(rowSet.getLong("transfer_status_id"));
         transfer.setTransfer_type_id(rowSet.getLong("transfer_type_id"));
-        transfer.setAccount_from(rowSet.getLong("account_from"));
-        transfer.setAccount_to(rowSet.getLong("account_to"));
+        transfer.setSender_account(rowSet.getLong("sender_account"));
+        transfer.setSender_id(rowSet.getLong("sender_id"));
+        transfer.setReceiver_account(rowSet.getLong("receiver_account"));
+        transfer.setReceiver_id(rowSet.getLong("receiver_id"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));
+        transfer.setSendername(rowSet.getString("sendername"));
+        transfer.setReceivername(rowSet.getString("receivername"));
 
         return transfer;
     }
