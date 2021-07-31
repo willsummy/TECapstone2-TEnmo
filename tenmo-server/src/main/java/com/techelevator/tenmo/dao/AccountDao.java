@@ -8,11 +8,11 @@ import java.util.Map;
 
 public interface AccountDao {
 
-    Account findAccountById(Long account_id) throws AccountNotFoundException;
+    Account findAccountByUsername(String username) throws AccountNotFoundException;
 
-    Account findUserById(Long userId) throws AccountNotFoundException;
+    Long getAccountIdByUserId(Long user_id);
 
-    BigDecimal getBalance(Long account_id);
+    BigDecimal getBalance(String username);
 
   //  BigDecimal addToBalance(BigDecimal amount, Long userId) throws AccountNotFoundException;
 

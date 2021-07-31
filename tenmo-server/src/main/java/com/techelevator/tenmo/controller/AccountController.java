@@ -31,8 +31,7 @@ public class AccountController {
 
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
     public BigDecimal getBalance(Principal principal) throws AccountNotFoundException {
-        Long user_id = userDao.findIdByUsername(principal.getName());
-        return accountDao.findUserById(user_id).getBalance();
+        return accountDao.getBalance(principal.getName());
     }
 
     @RequestMapping(path = "/users/list", method = RequestMethod.GET)
@@ -52,8 +51,7 @@ public class AccountController {
 
     @RequestMapping(path = "/account/{user_id}", method = RequestMethod.GET)
     public Long getAccountIdByUserId(@PathVariable Long user_id) throws AccountNotFoundException {
-        Account account = accountDao.findUserById(user_id);
-        return account.getAccount_id();
+        return accountDao.getAccountIdByUserId(user_id);
     }
 
 

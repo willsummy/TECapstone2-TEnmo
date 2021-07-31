@@ -122,9 +122,9 @@ public class JdbcTransferDao implements TransferDao{
                 sendFunds(transfer);
 
                 String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                        "VALUES (?, ?, ?, ?, ?);";
+                        "VALUES (2, 2, ?, ?, ?);";
 
-                jdbcTemplate.update(sql, 2, 2, transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
+                jdbcTemplate.update(sql, transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
                 return true;
             } else {
                 return false;
@@ -133,9 +133,9 @@ public class JdbcTransferDao implements TransferDao{
         } else if (transfer.getTransfer_type_id() == 1) { //receiving transfer
 
             String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                    "VALUES (?, ?, ?, ?, ?);";
+                    "VALUES (1, 1, ?, ?, ?);";
 
-            jdbcTemplate.update(sql, 1, 1, transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
+            jdbcTemplate.update(sql,transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
             return true;
             // create a pending request transfer in transfers table, no funds are moved yet
 

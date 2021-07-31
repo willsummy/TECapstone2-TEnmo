@@ -26,10 +26,14 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public Account findAccountById(Long account_id) throws AccountNotFoundException {
-        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE account_id = ?;";
+    public Account findAccountByUsername(String username) throws AccountNotFoundException {
+        String sqlString = "SELECT account_id, balance, u.user_id, u.username " +
+                "FROM accounts a " +
+                "JOIN users u " +
+                "ON a.user_id = u.user_id " +
+                "WHERE username = ?;";
         Account account = null;
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, account_id);
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, username);
             if (result.next()) {
                 account = mapRowToAccount(result);
             }
@@ -38,24 +42,30 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public Account findUserById(Long user_id) throws AccountNotFoundException {
-        String sqlString = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?;";
-        Account account = null;
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sqlString, user_id);
-            if(result.next()) {
-                account = mapRowToAccount(result);
-            }
-        return account;
+    public Long getAccountIdByUserId(Long user_id) {
+        String sql = "SELECT account_id " +
+                "FROM accounts " +
+                "WHERE user_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user_id);
+        if (results.next()) {
+            return results.getLong("account_id");
+        }
+        return 0L;
     }
 
 
-
     @Override
-    public BigDecimal getBalance(Long account_id) throws DataAccessException {
-        String sqlString = "SELECT balance FROM accounts WHERE account_id = ?";
+    public BigDecimal getBalance(String username) throws DataAccessException {
+        String sqlString = "SELECT balance " +
+                "FROM accounts a " +
+                "JOIN users u " +
+                "ON a.user_id = u.user_id " +
+                "WHERE username = ?";
+
+
         BigDecimal balance = null;
 
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sqlString, account_id);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sqlString, username);
             if(results.next()) {
                 balance = results.getBigDecimal("balance");
             }
