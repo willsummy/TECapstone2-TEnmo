@@ -92,37 +92,37 @@ public class JdbcAccountDao implements AccountDao {
 //        return account.getBalance();
 //    }
 
-    @Override
-    public boolean sendFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
-
-        if (getBalance(sender_account_id).compareTo(amount) == -1) return false;
-
-        BigDecimal oldSenderBalance = findAccountById(sender_account_id).getBalance();
-        BigDecimal oldReceiverBalance = findAccountById(receiver_account_id).getBalance();
-        BigDecimal newSenderBalance = oldSenderBalance.subtract(amount);
-        BigDecimal newReceiverBalance = oldReceiverBalance.add(amount);
-
-
-        String sql = "START TRANSACTION; " +
-                "UPDATE accounts " +
-                "SET balance = ? " + // new updated sender balance
-                "WHERE account_id = ?; " + // sender_account_id
-                "UPDATE accounts " +
-                "SET balance = ? " + // new updated receiver balance
-                "WHERE account_id = ?; " + // receiver_account_id
-                "COMMIT;";
-
-        jdbcTemplate.update(sql, newSenderBalance, sender_account_id, newReceiverBalance, receiver_account_id);
-
-        if (findAccountById(sender_account_id).getBalance().compareTo(oldSenderBalance) == 0 //if both accounts haven't changed
-        && findAccountById(receiver_account_id).getBalance().compareTo(oldReceiverBalance) == 0 //transfer didn't happen
-        ) {
-            return false;
-        }
-
-        // check if any change happened and send boolean based on that
-        return true;
-    }
+//    @Override
+//    public boolean sendFunds(BigDecimal amount, Long sender_account_id, Long receiver_account_id) throws AccountNotFoundException {
+//
+//        if (getBalance(sender_account_id).compareTo(amount) == -1) return false;
+//
+//        BigDecimal oldSenderBalance = findAccountById(sender_account_id).getBalance();
+//        BigDecimal oldReceiverBalance = findAccountById(receiver_account_id).getBalance();
+//        BigDecimal newSenderBalance = oldSenderBalance.subtract(amount);
+//        BigDecimal newReceiverBalance = oldReceiverBalance.add(amount);
+//
+//
+//        String sql = "START TRANSACTION; " +
+//                "UPDATE accounts " +
+//                "SET balance = ? " + // new updated sender balance
+//                "WHERE account_id = ?; " + // sender_account_id
+//                "UPDATE accounts " +
+//                "SET balance = ? " + // new updated receiver balance
+//                "WHERE account_id = ?; " + // receiver_account_id
+//                "COMMIT;";
+//
+//        jdbcTemplate.update(sql, newSenderBalance, sender_account_id, newReceiverBalance, receiver_account_id);
+//
+//        if (findAccountById(sender_account_id).getBalance().compareTo(oldSenderBalance) == 0 //if both accounts haven't changed
+//        && findAccountById(receiver_account_id).getBalance().compareTo(oldReceiverBalance) == 0 //transfer didn't happen
+//        ) {
+//            return false;
+//        }
+//
+//        // check if any change happened and send boolean based on that
+//        return true;
+//    }
 
     @Override
     public String getUserNameByAccountID(Long account_id) {

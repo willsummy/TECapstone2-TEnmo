@@ -14,7 +14,7 @@ public interface TransferDao {
 
     Transfer getTransferDetailsByTransferId(Long transferId, String username);
 
-    boolean createTransfer(Transfer transfer, int type) throws AccountNotFoundException;
+    boolean createTransfer(Transfer transfer) throws AccountNotFoundException;
 
     boolean acceptTransfer(Transfer transfer) throws AccountNotFoundException;
 

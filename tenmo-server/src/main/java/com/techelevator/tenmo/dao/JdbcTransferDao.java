@@ -14,8 +14,8 @@ import java.util.List;
 @Component
 public class JdbcTransferDao implements TransferDao{
 
-    private final JdbcTemplate jdbcTemplate;
-    private final AccountDao accountDao;
+    private JdbcTemplate jdbcTemplate;
+    private AccountDao accountDao;
 
     public JdbcTransferDao(DataSource dataSource, AccountDao accountDao) {
         this.jdbcTemplate = new JdbcTemplate((dataSource));
@@ -114,10 +114,12 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public boolean createTransfer(Transfer transfer, int type) throws AccountNotFoundException {
+    public boolean createTransfer(Transfer transfer) throws AccountNotFoundException {
 
-        if (type == 2) { // sending transfer
-            if (accountDao.sendFunds(transfer.getAmount(), transfer.getSender_account(), transfer.getReceiver_account())) {
+        if (transfer.getTransfer_type_id() == 2) { // sending transfer
+            if (validateAmount(transfer)) {
+
+                sendFunds(transfer);
 
                 String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                         "VALUES (?, ?, ?, ?, ?);";
@@ -128,7 +130,8 @@ public class JdbcTransferDao implements TransferDao{
                 return false;
 
             }
-        } else if (type == 1) { //receiving transfer
+        } else if (transfer.getTransfer_type_id() == 1) { //receiving transfer
+
             String sql = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (?, ?, ?, ?, ?);";
 
@@ -147,7 +150,9 @@ public class JdbcTransferDao implements TransferDao{
     public boolean acceptTransfer(Transfer transfer) throws AccountNotFoundException {
         // attempt to update funds in account balances
 
-        if (accountDao.sendFunds(transfer.getAmount(), transfer.getSender_account(), transfer.getReceiver_account())) {
+        if (validateAmount(transfer)) {
+
+            sendFunds(transfer);
 
             String sql = "UPDATE transfers " +
                     "SET transfer_status_id = 2 " +
@@ -169,6 +174,33 @@ public class JdbcTransferDao implements TransferDao{
 
         jdbcTemplate.update(sql, transfer.getTransfer_id());
         return true;
+    }
+
+    private boolean validateAmount(Transfer transfer) {
+        String sql = "SELECT (balance >= ?) as is_valid " +
+                "FROM users u " +
+                "JOIN accounts a ON u.user_id = a.user_id " +
+                "WHERE a.account_id = ?;";
+        SqlRowSet isValid = jdbcTemplate.queryForRowSet(sql, transfer.getAmount() ,transfer.getSender_account());
+        if (isValid.next()) {
+            return isValid.getBoolean("is_valid");
+        }
+
+        return false;
+    }
+
+    private void sendFunds(Transfer transfer) {
+
+        String sql = "START TRANSACTION; " +
+                "UPDATE accounts " +
+                "SET balance = balance - ? " + // new updated sender balance
+                "WHERE account_id = ?; " + // sender_account_id
+                "UPDATE accounts " +
+                "SET balance = balance + ? " + // new updated receiver balance
+                "WHERE account_id = ?; " + // receiver_account_id
+                "COMMIT;";
+
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getSender_account(), transfer.getReceiver_account(), transfer.getAmount());
     }
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet) {
