@@ -1,12 +1,16 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 public class Account {
     // this table in the database has a 1to1 relationship to the user table
 
+    private String username;
     private Long account_id; // primary key
+    @NotBlank
     private Long user_id; // unique foreign key, 1to1
+    @NotBlank
     private BigDecimal balance;
 
     public Account() {}
@@ -14,6 +18,14 @@ public class Account {
     public Account(Long user_id, BigDecimal balance) {
         this.user_id = user_id;
         this.balance = balance;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getAccount_id() {
