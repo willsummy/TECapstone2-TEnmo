@@ -12,9 +12,13 @@ public class Transfer {
     @NotNull(message = "Status ID is mandatory")
     private Long transfer_status_id; // foreign key
     @NotNull(message = "Sender ID is mandatory")
-    private Long account_from; // account_id fk
+    private Long sender_account; // account_id fk
+    private Long sender_id;
+    private String sendername;
     @NotNull(message = "Receiver ID is mandatory")
-    private Long account_to; // account_id fk
+    private Long receiver_account; // account_id fk
+    private Long receiver_id;
+    private String receivername;
     @NotNull(message = "Amount is mandatory")
     private BigDecimal amount;
 
@@ -23,8 +27,8 @@ public class Transfer {
     public Transfer(Long transfer_type_id, Long transfer_status_id, Long account_from, Long account_to, BigDecimal amount) {
         this.transfer_type_id = transfer_type_id;
         this.transfer_status_id = transfer_status_id;
-        this.account_from = account_from;
-        this.account_to = account_to;
+        this.sender_account = account_from;
+        this.receiver_account = account_to;
         this.amount = amount;
     }
 
@@ -52,20 +56,52 @@ public class Transfer {
         this.transfer_status_id = transfer_status_id;
     }
 
-    public Long getAccount_from() {
-        return account_from;
+    public Long getSender_account() {
+        return sender_account;
     }
 
-    public void setAccount_from(Long account_from) {
-        this.account_from = account_from;
+    public void setSender_account(Long sender_account) {
+        this.sender_account = sender_account;
     }
 
-    public Long getAccount_to() {
-        return account_to;
+    public Long getSender_id() {
+        return sender_id;
     }
 
-    public void setAccount_to(Long account_to) {
-        this.account_to = account_to;
+    public void setSender_id(Long sender_id) {
+        this.sender_id = sender_id;
+    }
+
+    public String getSendername() {
+        return sendername;
+    }
+
+    public void setSendername(String sendername) {
+        this.sendername = sendername;
+    }
+
+    public Long getReceiver_account() {
+        return receiver_account;
+    }
+
+    public void setReceiver_account(Long receiver_account) {
+        this.receiver_account = receiver_account;
+    }
+
+    public Long getReceiver_id() {
+        return receiver_id;
+    }
+
+    public void setReceiver_id(Long receiver_id) {
+        this.receiver_id = receiver_id;
+    }
+
+    public String getReceivername() {
+        return receivername;
+    }
+
+    public void setReceivername(String receivername) {
+        this.receivername = receivername;
     }
 
     public BigDecimal getAmount() {
