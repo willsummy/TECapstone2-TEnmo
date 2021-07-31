@@ -17,26 +17,20 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
 
-    private AccountDao accountDao;
     private TransferDao transferDao;
-    private UserDao userDao;
 
-    public TransferController(AccountDao accountDao, TransferDao transferDao, UserDao userDao) {
-        this.accountDao = accountDao;
+    public TransferController( TransferDao transferDao) {
         this.transferDao = transferDao;
-        this.userDao = userDao;
     }
 
     @RequestMapping(path = "/transfers/list", method = RequestMethod.GET)
     public List<Transfer> listTransfersByUserId(Principal principal){
-        Long user_id = userDao.findIdByUsername(principal.getName());
-        return transferDao.listAllTransfersByUserId(user_id);
+        return transferDao.listAllTransfersByUserId(principal.getName());
     }
 
     @RequestMapping(path = "/pending/list", method = RequestMethod.GET)
     public List<Transfer> listPendingTransfersByUserId(Principal principal) {
-        Long user_id = userDao.findIdByUsername(principal.getName());
-        return transferDao.listPendingTransfersByUserId(user_id);
+        return transferDao.listPendingTransfersByUserId(principal.getName());
     }
 
     @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
