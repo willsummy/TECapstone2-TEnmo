@@ -93,14 +93,11 @@ public class App {
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
-		// account ids and usernames
-		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
-
 		TransferModel[] transfers;
 
 		try {
 			transfers = transferService.listTransfers();
-			Long user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
+			Long user_account_id = accountService.getAccountIdFromUser(currentUser.getUser().getId());
 			console.displayTransfers(transfers, user_account_id);
 			System.out.println();
 		} catch (RestClientException re) {
@@ -135,7 +132,7 @@ public class App {
 				continue;
 			}
 
-			console.transferDetails(transfer, usernames);
+			console.transferDetails(transfer);
 
 		}
 	}
@@ -144,17 +141,14 @@ public class App {
 		TransferService transferService = new TransferService(API_BASE_URL, currentUser);
 		AccountService accountService = new AccountService(API_BASE_URL, currentUser);
 
-		// account ids and usernames
-		Map<Long, String> usernames = accountService.getMapOfUsersWithIds();
-
 		TransferModel[] transfers;
 
 		Long user_account_id = null;
 
 		try {
 			transfers = transferService.listPendingTransfers();
-			user_account_id = accountService.getAccountIdFromUserId(currentUser.getUser().getId());
-			console.displayPendingTransfers(transfers, usernames, user_account_id);
+			user_account_id = accountService.getAccountIdFromUser(currentUser.getUser().getId());
+			console.displayPendingTransfers(transfers, user_account_id);
 			System.out.println();
 		} catch (RestClientException re) {
 			System.out.println("Issue with the Rest API");
@@ -189,7 +183,7 @@ public class App {
 				continue;
 			}
 
-			console.transferDetails(transfer, usernames);
+			console.transferDetails(transfer);
 
 			// give user option to approve transfer if transfer is to them
 			// if the account_from matches user account_id, they can approve
@@ -355,15 +349,15 @@ public class App {
 				// give the user the option to leave this menu if they don't want to send money
 				if (userToSendTo.equalsIgnoreCase("X")) return null;
 
-				transfer.setSender_account(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
-				transfer.setReceiver_account(accountService.getAccountIdFromUserId(Long.parseLong(userToSendTo)));
+				transfer.setSender_account(accountService.getAccountIdFromUser(currentUser.getUser().getId()));
+				transfer.setReceiver_account(accountService.getAccountIdFromUser(Long.parseLong(userToSendTo)));
 				if (userToSendTo.equals(currentUser.getUser().getId().toString())) {
 					System.out.println("Cannot send money to self \n");
 					continue;
 				}
 				break;
 			} catch (Exception e) {
-				System.out.println("Please enter valid ID \n");
+				e.printStackTrace();
 				continue;
 			}
 		}
@@ -405,8 +399,8 @@ public class App {
 				// give the user the option to leave this menu if they don't want to send money
 				if (otherUser.equalsIgnoreCase("X")) return null;
 
-				transfer.setReceiver_account(accountService.getAccountIdFromUserId(currentUser.getUser().getId()));
-				transfer.setSender_account(accountService.getAccountIdFromUserId(Long.parseLong(otherUser)));
+				transfer.setReceiver_account(accountService.getAccountIdFromUser(currentUser.getUser().getId()));
+				transfer.setSender_account(accountService.getAccountIdFromUser(Long.parseLong(otherUser)));
 				if (otherUser.equals(currentUser.getUser().getId().toString())) {
 					System.out.println("Cannot request money from self \n");
 					continue;

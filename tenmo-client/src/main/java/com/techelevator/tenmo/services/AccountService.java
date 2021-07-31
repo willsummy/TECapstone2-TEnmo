@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.model.AccountModel;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,7 +11,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 public class AccountService {
 
@@ -41,23 +41,9 @@ public class AccountService {
         return user;
     }
 
-    // probably don't need this one
-    public String findUserNameByAccountID(Long account_id) throws RestClientException {
-        return restTemplate.exchange(API_BASE_URL + "username/" + account_id, HttpMethod.GET, makeAuthEntity(), String.class ).getBody();
-    }
-
-    public Map<Long, String> getMapOfUsersWithIds() {
-        return restTemplate.exchange(API_BASE_URL + "usernames", HttpMethod.GET, makeAuthEntity(), Map.class).getBody();
-    }
-
-    public Long getAccountIdFromUserId(Long user_id) {
+    public Long getAccountIdFromUser(Long user_id) {
         return restTemplate.exchange(API_BASE_URL + "/account/" + user_id, HttpMethod.GET, makeAuthEntity(), Long.class).getBody();
     }
-
-    public String findUsernameByAccountId(Long account_id) {
-        return restTemplate.exchange(API_BASE_URL + "account/" + account_id, HttpMethod.GET, makeAuthEntity(), String.class).getBody();
-    }
-
 
     private HttpEntity makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();

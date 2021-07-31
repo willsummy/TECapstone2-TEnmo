@@ -156,7 +156,7 @@ public class ConsoleService {
 
 	}
 
-	public void displayPendingTransfers(TransferModel[] transfers, Map<Long, String> usernames, Long user_account_id) {
+	public void displayPendingTransfers(TransferModel[] transfers, Long user_account_id) {
 		//get account from ID
 		//get account to ID
 		//get amount
@@ -206,11 +206,11 @@ public class ConsoleService {
 
 
 
-	public void transferDetails(TransferModel transfer, Map<Long, String> usernames ) {
+	public void transferDetails(TransferModel transfer) {
 
 		Long transferId = transfer.getTransfer_id();
-		String senderName = usernames.get(transfer.getSender_account().toString()); // not sure why these needs to be a string
-		String receiverName = usernames.get(transfer.getReceiver_account().toString());
+		String senderName = transfer.getSendername(); // not sure why these needs to be a string
+		String receiverName = transfer.getReceivername();
 		String amount = NumberFormat.getCurrencyInstance().format(transfer.getAmount()); // formats with $ and two point digits
 
 		// Transfer type and status need to be strings, based on id\
